@@ -1,0 +1,4 @@
+name = "GeometricUnits"
+uuid = "43c95830-f66f-43f3-8298-be5f3865d5b9"
+authors = ["Abhimanyu Susobhanan <abhisrkckl@gmail.com>"]
+version = "0.1.0"
