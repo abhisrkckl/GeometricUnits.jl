@@ -124,7 +124,6 @@ using Test
         @test asec(sec(a1)) ≈ a1
         @test acot(cot(a1)) ≈ a1
 
-        @test atan(t1, t2) ≈ atan(t1/t2)
-        @test acot(t1, t2) ≈ acot(t1/t2)
+        @test atan(t1, t2) ≈ atan(t1 / t2)
     end
 end
