@@ -17,12 +17,21 @@ using Test
         @test zero(f1).x == 0 && zero(f1).d == f1.d
     end
 
+    @testset "commonly used quantities" begin
+        @test dimensionless(2.5) == speed(2.5)
+        @test time(2.5) == distance(2.5)
+        @test frequency(2.5) == acceleration(2.5)
+    end
+
     @testset "comparison" begin
         @test t1 == t1
         @test_throws DomainError t1 == f1
 
         @test t1 ≈ t1
         @test_throws DomainError t1 ≈ f1
+
+        @test 0 == zero(d1)
+        @test 0 ≈ zero(d1)
     end
 
     @testset "addition and subtraction" begin
@@ -65,6 +74,34 @@ using Test
         @test t1 / f1 ≈ t1 * (1 / f1)
         @test t1 / t1 == 1
 
-        @test t1 + 1 / f1 ≈ (t1 * f1 + 1)
+        @test t1 + 1 / f1 ≈ (t1 * f1 + 1) / f1
+
+        @test 1 / (1 / d1) ≈ d1
+        @test 2 * (d1 / 2) ≈ d1
+    end
+
+    @testset "power and root" begin
+        @test t1 * t1 == t1^2
+        @test 1 / t1 == t1^(-1)
+        
+        @test sqrt(t1^2) ≈ t1
+        @test cbrt(t1^3) ≈ t1
+        @test root(t1^5, 5) ≈ t1
+        
+        @test sqrt(d1) ≈ d1^0.5
+        @test sqrt(d1) ≈ d1^(1//2)
+        @test d1^2 ≈ root(d1, 1//2)
+        
+        @test 1.0^d1 ≈ 1
+        @test d1^0 ≈ 1
+
+        @test d1 ^ d1 == d1.x ^ d1.x
+
+        @test_throws DomainError t1^(1//2)
+        @test_throws DomainError t1^6.3
+        @test_throws DomainError 0.5^t1
+        @test_throws DomainError sqrt(t1)
+        @test_throws DomainError cbrt(t1)
+        @test_throws DomainError root(t1, 4)
     end
 end
