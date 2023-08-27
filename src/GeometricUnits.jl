@@ -1,18 +1,34 @@
 module GeometricUnits
 
-import Base.+
+import Base.+, Base.-, Base.time, Base.zero
 
-dimension_mismatch(obj) = throw(DomainError(obj, "Dimension mismatch!")) 
+export GQ, dimension_mismatch, dimensionless, angle, speed, time, distance, frequency, acceleration, unit, zero, quantity
 
-struct GQ{X <: Real}
+dimension_mismatch(obj) = throw(DomainError(obj, "Dimension mismatch!"))
+
+struct GQ{X<:Real}
     x::X
     d::Int
-end 
+end
 
-unit(a::GQ) = typeof(a)(1, a.d)
+unit(a::GQ) = GQ(oneunit(a.x), a.d)
+zero(a::GQ) = GQ(zero(a.x), a.d)
+quantity(a::GQ, y) = GQ(oftype(a.x, y), a.d)
 
-zero(a::GQ) = typeof(a)(0, a.d)
+dimensionless(x::Float64) = GQ{Float64}(x, 0)
+angle(x::Float64) = GQ{Float64}(x, 0)
+speed(x::Float64) = GQ{Float64}(x, 0)
 
-a::GQ + b::GQ = (a.d == b.d) ? typeof(a)(a.x+b.x, a.d) : dimension_mismatch(obj)
+time(x::Float64) = GQ{Float64}(x, 1)
+distance(x::Float64) = GQ{Float64}(x, 1)
+
+frequency(x::Float64) = GQ{Float64}(x, -1)
+acceleration(x::Float64) = GQ{Float64}(x, -1)
+
+a::GQ + b::GQ = (a.d == b.d) ? GQ(a.x + b.x, a.d) : dimension_mismatch((a, b))
+
+a::GQ - b::GQ = (a.d == b.d) ? GQ(a.x - b.x, a.d) : dimension_mismatch((a, b))
+
+-a::GQ = GQ(-a.x, a.d)
 
 end # module GeometricUnits
