@@ -9,7 +9,6 @@ end
 export dimension_mismatch, dimensionless_forward
 
 dimension_mismatch(obj) = throw(DomainError(obj, "Dimension mismatch!"))
-dimensionless_forward(a::GQ, f) = (a.d == 0) ? GQ(f(a.x), 0) : dimension_mismatch(a)
 
 # Unit forwarding
 import Base.zero
@@ -18,6 +17,7 @@ export unit, quantity_like
 unit(a::GQ) = GQ(oneunit(a.x), a.d)
 zero(a::GQ) = GQ(zero(a.x), a.d)
 quantity_like(a::GQ, y) = GQ(oftype(a.x, y), a.d)
+dimensionless_forward(a::GQ, f) = (a.d == 0) ? GQ(f(a.x), 0) : dimension_mismatch((a, f))
 
 # == Commonly used quantities ===
 import Base.time
