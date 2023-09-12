@@ -126,4 +126,19 @@ using Test
 
         @test atan(t1, t2) ≈ atan(t1 / t2)
     end
+
+    @testset "taylor-horner" begin
+        t0 = time(0.0)
+        c0 = distance(1.5)
+        c1 = speed(1.0)
+        c2 = acceleration(1.2)
+        c3 = acceleration(0.5)/time(2.0)
+        c4 = acceleration(1.2)/time(2.0)^2
+        cs = [c1, c2, c3, c4]
+        th = TaylorSeries(t0, c0, cs)
+        
+        t1 = time(1.0)
+
+        @test th(t1) ≈ c0 + c1*t1 + (1/2)*c2*t1^2 + (1/6)*c3*t1^3 + (1/24)*c4*t1^4
+    end
 end

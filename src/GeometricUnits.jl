@@ -5,5 +5,6 @@ include("arithmetic.jl")
 include("comparison.jl")
 include("explog.jl")
 include("trigonometric.jl")
+include("taylor_horner.jl")
 
 end # module GeometricUnits
