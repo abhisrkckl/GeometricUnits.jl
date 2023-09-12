@@ -145,5 +145,9 @@ using Test
               (1 / 2) * c2 * t1^2 +
               (1 / 6) * c3 * t1^3 +
               (1 / 24) * c4 * t1^4
+        
+        c5 = acceleration(1.2) / time(2.0)^2
+        cs = [c1, c2, c3, c4, c5]
+        @test_throws DomainError TaylorSeries(t0, c0, cs)
     end
 end

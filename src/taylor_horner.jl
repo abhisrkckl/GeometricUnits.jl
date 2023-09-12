@@ -42,4 +42,3 @@ function (th::TaylorSeries)(t::GQ)
     return quantity_like(th.c0, th.c0.x + t_t0 * result)
 end
 
-# a0 + x*(a1 + x*(a2 + a3*x))
