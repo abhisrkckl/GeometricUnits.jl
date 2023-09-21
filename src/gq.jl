@@ -11,10 +11,11 @@ export dimension_mismatch, dimensionless_forward
 dimension_mismatch(obj) = throw(DomainError(obj, "Dimension mismatch!"))
 
 # Unit forwarding
-import Base.zero
+import Base.zero, Base.oneunit
 export unit, quantity_like
 
-unit(a::GQ) = GQ(oneunit(a.x), a.d)
+oneunit(a::GQ) = GQ(oneunit(a.x), a.d)
+unit(a::GQ) = oneunit(a)
 zero(a::GQ) = GQ(zero(a.x), a.d)
 quantity_like(a::GQ, y) = GQ(oftype(a.x, y), a.d)
 dimensionless_forward(a::GQ, f) = (a.d == 0) ? GQ(f(a.x), 0) : dimension_mismatch((a, f))
