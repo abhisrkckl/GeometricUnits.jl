@@ -27,6 +27,7 @@ using Test
 
     @testset "comparison" begin
         @test t1 == t1
+        @test !(t1 != t1)
         @test_throws DomainError t1 == f1
 
         @test t1 ≈ t1
@@ -34,6 +35,24 @@ using Test
 
         @test 0 == zero(d1)
         @test 0 ≈ zero(d1)
+
+        @test (t1 > t2) || (t1 <= t2)
+        @test (t1 < t2) || (t1 >= t2)
+
+        @test (d1 > 0) || (d1 <= 0)
+        @test (d1 < 0) || (d1 >= 0)
+        @test (0 > d1) || (0 <= d1)
+        @test (0 < d1) || (0 >= d1)
+
+        @test_throws DomainError d1 > t1
+        @test_throws DomainError d1 >= t1
+        @test_throws DomainError d1 <= t1
+        @test_throws DomainError d1 < t1
+
+        @test_throws DomainError 0 > t1
+        @test_throws DomainError 0 >= t1
+        @test_throws DomainError 0 <= t1
+        @test_throws DomainError 0 < t1
     end
 
     @testset "addition and subtraction" begin
