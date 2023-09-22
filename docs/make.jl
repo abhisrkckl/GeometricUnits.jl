@@ -1,3 +1,3 @@
 using Documenter, GeometricUnits
 
-makedocs(sitename="GeometricUnits.jl")
+makedocs(sitename = "GeometricUnits.jl")

@@ -208,24 +208,28 @@ using Test
             qc = dimensionless(c)
             qb = frequency(b)
             qa = GQ(a, -2)
-            return value(qa*qt*qt + qb*qt + qc)
+            return value(qa * qt * qt + qb * qt + qc)
         end
 
-        function f1_grad_anl(a, b, c, t)  
-            return t*t, t, 1.0, 2*a*t + b
+        function f1_grad_anl(a, b, c, t)
+            return t * t, t, 1.0, 2 * a * t + b
         end
 
-        @test [f1_grad_anl(1.,2.,3., -2.0)...] ≈ [gradient(f1, 1.,2.,3., -2.0)...]
+        @test [f1_grad_anl(1.0, 2.0, 3.0, -2.0)...] ≈ [gradient(f1, 1.0, 2.0, 3.0, -2.0)...]
 
         function f2(a, w, t)
             qa = dimensionless(a)
             qw = frequency(w)
             qt = time(t)
-            return [value(qa*sin(qw*qt)), value(qa*cos(qw*qt))]
+            return [value(qa * sin(qw * qt)), value(qa * cos(qw * qt))]
         end
 
-        function f2_jac_anl(a, w, t)  
-            return ([sin(w*t), cos(w*t)], [a*t*cos(w*t), -a*t*sin(w*t)], [a*w*cos(w*t), -a*w*sin(w*t)])
+        function f2_jac_anl(a, w, t)
+            return (
+                [sin(w * t), cos(w * t)],
+                [a * t * cos(w * t), -a * t * sin(w * t)],
+                [a * w * cos(w * t), -a * w * sin(w * t)],
+            )
         end
 
         jac1 = jacobian(f2, Float128(1.2), Float128(0.5), Float128(2.3))
