@@ -1,5 +1,10 @@
 export GQ
 
+"""
+    GQ{X<:AbstractFloat}
+    
+Struct representing a geometrized quantity.
+"""
 struct GQ{X<:AbstractFloat}
     x::X
     d::Int
@@ -7,6 +12,7 @@ end
 
 # Util functions
 export dimension_mismatch, dimensionless_forward
+
 
 dimension_mismatch(obj) = throw(DomainError(obj, "Dimension mismatch!"))
 
