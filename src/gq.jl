@@ -12,7 +12,7 @@ dimension_mismatch(obj) = throw(DomainError(obj, "Dimension mismatch!"))
 
 # Unit forwarding
 import Base.zero, Base.oneunit
-export unit, quantity_like
+export unit, quantity_like, value, udim
 
 oneunit(a::GQ) = GQ(oneunit(a.x), a.d)
 unit(a::GQ) = oneunit(a)

@@ -11,11 +11,11 @@ using Test
     a1 = dimensionless(0.2)
 
     @testset "unit and zero" begin
-        @test unit(t1).x == 1 && unit(t1).d == t1.d
-        @test zero(t1).x == 0 && zero(t1).d == t1.d
+        @test value(unit(t1)) == 1 && udim(unit(t1)) == udim(t1)
+        @test value(zero(t1)) == 0 && udim(zero(t1)) == udim(t1)
 
-        @test unit(f1).x == 1 && unit(f1).d == f1.d
-        @test zero(f1).x == 0 && zero(f1).d == f1.d
+        @test value(unit(f1)) == 1 && udim(unit(f1)) == udim(f1)
+        @test value(zero(f1)) == 0 && udim(zero(f1)) == udim(f1)
     end
 
     @testset "commonly used quantities" begin
@@ -145,13 +145,13 @@ using Test
               (1 / 2) * c2 * t1^2 +
               (1 / 6) * c3 * t1^3 +
               (1 / 24) * c4 * t1^4
-        
+
         d0 = dimensionless(2.3)
-        
+
         @test_throws DomainError th(d0)
 
         @test_throws DomainError TaylorSeries(t0, d0, cs)
-        
+
         c5 = acceleration(1.2) / time(2.0)^2
         cs = [c1, c2, c3, c4, c5]
         @test_throws DomainError TaylorSeries(t0, c0, cs)
