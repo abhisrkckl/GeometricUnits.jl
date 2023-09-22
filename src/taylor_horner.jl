@@ -41,4 +41,3 @@ function (th::TaylorSeries)(t::GQ)
     end
     return quantity_like(th.c0, th.c0.x + t_t0 * result)
 end
-

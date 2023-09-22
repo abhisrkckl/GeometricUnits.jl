@@ -1,4 +1,5 @@
 using GeometricUnits
+using LinearAlgebra
 using Test
 
 @testset verbose = true begin
@@ -155,5 +156,28 @@ using Test
         c5 = acceleration(1.2) / time(2.0)^2
         cs = [c1, c2, c3, c4, c5]
         @test_throws DomainError TaylorSeries(t0, c0, cs)
+    end
+
+    @testset "linear algebra" begin
+        @testset "dot" begin
+            x = [1.1, 0.85, -1.2]
+            y = [1.3, -0.87, 1.3]
+            M = [[1.0, 2.0, 3] [4, 4.3, -2] [3.0, 2.1, -3.0]]
+
+            sx = distance.(x)
+            sy = distance.(y)
+            M0 = dimensionless.(M)
+
+            x_y = dot(x, y)
+            sx_sy = dot(sx, sy)
+
+            @test x_y ≈ sx_sy.x
+            @test sx_sy.d == sx[1].d + sy[1].d
+
+            x_M_y = dot(x, M, y)
+            sx_M0_sy = dot(sx, M0, sy)
+            @test x_M_y ≈ sx_M0_sy.x
+            @test sx_M0_sy.d == sx[1].d + M0[1, 1].d + sy[1].d
+        end
     end
 end
