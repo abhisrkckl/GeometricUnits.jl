@@ -2,7 +2,7 @@ export GQ
 
 """
     GQ{X<:AbstractFloat}
-    
+
 Struct representing a geometrized quantity.
 """
 struct GQ{X<:AbstractFloat}
@@ -13,7 +13,11 @@ end
 # Util functions
 export dimension_mismatch, dimensionless_forward
 
+"""
+    dimension_mismatch(obj)
 
+Utility function to throw a DomainError upon encountering a dimensionally mismatched expression.
+"""
 dimension_mismatch(obj) = throw(DomainError(obj, "Dimension mismatch!"))
 
 # Unit forwarding

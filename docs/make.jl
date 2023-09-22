@@ -1,3 +1,3 @@
 using Documenter, GeometricUnits
 
-makedocs(sitename="Bla")
+makedocs(sitename="GeometricUnits.jl")
