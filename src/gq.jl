@@ -20,6 +20,9 @@ zero(a::GQ) = GQ(zero(a.x), a.d)
 quantity_like(a::GQ, y) = GQ(oftype(a.x, y), a.d)
 dimensionless_forward(a::GQ, f) = (a.d == 0) ? GQ(f(a.x), 0) : dimension_mismatch((a, f))
 
+value(a::GQ) = a.x
+udim(a::GQ) = a.d
+
 # == Commonly used quantities ===
 import Base.time
 export dimensionless, speed, distance, frequency, acceleration
