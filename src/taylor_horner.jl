@@ -37,7 +37,6 @@ function (th::TaylorSeries)(t::GQ)
     n = length(th)
     for (ii, c) in enumerate(th.cs_rev)
         result = result * t_t0 / (n - ii + 1) + c
-        # print(result)
     end
     return quantity_like(th.c0, th.c0.x + t_t0 * result)
 end
