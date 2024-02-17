@@ -1,5 +1,6 @@
 # == Comparison ===
-import Base.==, Base.isapprox, Base.<, Base.<=, Base.>, Base.>=, Base.isfinite, Base.isinf, Base.isnan
+import Base.==,
+    Base.isapprox, Base.<, Base.<=, Base.>, Base.>=, Base.isfinite, Base.isinf, Base.isnan
 
 a::GQ == b::GQ = (a.d == b.d) ? (a.x == b.x) : dimension_mismatch((a, b))
 a::GQ == y::Real = (a.d == 0) ? (a.x == y) : dimension_mismatch((a, y))
