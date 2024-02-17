@@ -55,6 +55,10 @@ using Test
         @test_throws DomainError 0 >= t1
         @test_throws DomainError 0 <= t1
         @test_throws DomainError 0 < t1
+
+        @test isfinite(t1)
+        @test !isnan(t1)
+        @test !isinf(t1)
     end
 
     @testset "addition and subtraction" begin
