@@ -201,7 +201,7 @@ using Zygote
 
             sax = distance.(x)
             say = distance.(y)
-            
+
             sax_say = dot(sax, say)
 
             @test x_y ≈ sax_say.x
@@ -222,7 +222,8 @@ using Zygote
             return t * t, t, 1.0, 2 * a * t + b
         end
 
-        @test [func1_grad_anl(1.0, 2.0, 3.0, -2.0)...] ≈ [gradient(func1, 1.0, 2.0, 3.0, -2.0)...]
+        @test [func1_grad_anl(1.0, 2.0, 3.0, -2.0)...] ≈
+              [gradient(func1, 1.0, 2.0, 3.0, -2.0)...]
 
         function func2(a, w, t)
             qa = dimensionless(a)
