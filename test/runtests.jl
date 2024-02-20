@@ -1,8 +1,9 @@
 using GeometricUnits
 using LinearAlgebra
 using Quadmath
-using Zygote
+using StaticArrays
 using Test
+using Zygote
 
 @testset verbose = true begin
     t1 = time(2.9)
@@ -191,13 +192,20 @@ using Test
 
             sx = distance.(x)
             sy = distance.(y)
-            M0 = dimensionless.(M)
 
             x_y = dot(x, y)
             sx_sy = dot(sx, sy)
 
             @test x_y ≈ sx_sy.x
             @test sx_sy.d == sx[1].d + sy[1].d
+
+            sax = distance.(x)
+            say = distance.(y)
+            
+            sax_say = dot(sax, say)
+
+            @test x_y ≈ sax_say.x
+            @test sax_say.d == sax[1].d + say[1].d
         end
     end
 
