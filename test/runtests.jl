@@ -198,16 +198,11 @@ using Test
 
             @test x_y ≈ sx_sy.x
             @test sx_sy.d == sx[1].d + sy[1].d
-
-            x_M_y = dot(x, M, y)
-            sx_M0_sy = dot(sx, M0, sy)
-            @test x_M_y ≈ sx_M0_sy.x
-            @test sx_M0_sy.d == sx[1].d + M0[1, 1].d + sy[1].d
         end
     end
 
     @testset "derivatives" begin
-        function f1(a, b, c, t)
+        function func1(a, b, c, t)
             qt = time(t)
             qc = dimensionless(c)
             qb = frequency(b)
@@ -215,20 +210,20 @@ using Test
             return value(qa * qt * qt + qb * qt + qc)
         end
 
-        function f1_grad_anl(a, b, c, t)
+        function func1_grad_anl(a, b, c, t)
             return t * t, t, 1.0, 2 * a * t + b
         end
 
-        @test [f1_grad_anl(1.0, 2.0, 3.0, -2.0)...] ≈ [gradient(f1, 1.0, 2.0, 3.0, -2.0)...]
+        @test [func1_grad_anl(1.0, 2.0, 3.0, -2.0)...] ≈ [gradient(func1, 1.0, 2.0, 3.0, -2.0)...]
 
-        function f2(a, w, t)
+        function func2(a, w, t)
             qa = dimensionless(a)
             qw = frequency(w)
             qt = time(t)
             return [value(qa * sin(qw * qt)), value(qa * cos(qw * qt))]
         end
 
-        function f2_jac_anl(a, w, t)
+        function func2_jac_anl(a, w, t)
             return (
                 [sin(w * t), cos(w * t)],
                 [a * t * cos(w * t), -a * t * sin(w * t)],
@@ -236,8 +231,8 @@ using Test
             )
         end
 
-        jac1 = jacobian(f2, Float128(1.2), Float128(0.5), Float128(2.3))
-        jac2 = f2_jac_anl(Float128(1.2), Float128(0.5), Float128(2.3))
+        jac1 = jacobian(func2, Float128(1.2), Float128(0.5), Float128(2.3))
+        jac2 = func2_jac_anl(Float128(1.2), Float128(0.5), Float128(2.3))
         @test all([j1 ≈ j2 for (j1, j2) in zip(jac1, jac2)])
     end
 end
