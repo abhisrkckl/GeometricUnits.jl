@@ -188,7 +188,6 @@ using Zygote
         @testset "dot" begin
             x = [1.1, 0.85, -1.2]
             y = [1.3, -0.87, 1.3]
-            M = [[1.0, 2.0, 3] [4, 4.3, -2] [3.0, 2.1, -3.0]]
 
             sx = distance.(x)
             sy = distance.(y)
@@ -199,13 +198,17 @@ using Zygote
             @test x_y ≈ sx_sy.x
             @test sx_sy.d == sx[1].d + sy[1].d
 
-            sax = distance.(x)
-            say = distance.(y)
+            x = SA[1.1, 0.85, -1.2]
+            y = SA[1.3, -0.87, 1.3]
 
-            sax_say = dot(sax, say)
+            sx = distance.(x)
+            sy = distance.(y)
 
-            @test x_y ≈ sax_say.x
-            @test sax_say.d == sax[1].d + say[1].d
+            x_y = dot(x, y)
+            sx_sy = dot(sx, sy)
+
+            @test x_y ≈ sx_sy.x
+            @test sx_sy.d == sx[1].d + sy[1].d
         end
     end
 
