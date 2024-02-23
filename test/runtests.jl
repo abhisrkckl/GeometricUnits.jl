@@ -4,6 +4,7 @@ using Quadmath
 using StaticArrays
 using Test
 using TestExtras
+using BenchmarkTools
 using Zygote
 
 @testset verbose = true begin
@@ -280,6 +281,8 @@ using Zygote
             @test x_y ≈ sx_sy.x
             @test sx_sy.d == sx[1].d + sy[1].d
 
+            @test (@ballocated dot($sx, $sy)) == 0
+
             x = SA[1.1, 0.85, -1.2]
             y = SA[1.3, -0.87, 1.3]
 
@@ -293,6 +296,8 @@ using Zygote
             @test sx_sy.d == sx[1].d + sy[1].d
 
             @constinferred dot(sx, sy)
+
+            @test (@ballocated dot($sx, $sy)) == 0
         end
     end
 
