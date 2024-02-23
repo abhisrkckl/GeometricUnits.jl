@@ -11,7 +11,8 @@ JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
 Quadmath = "be4d8f0f-7fa4-5f49-b795-2f01399ab2dd"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+TestExtras = "5ed8adda-3752-4e41-b88a-e8b09835ee3a"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [targets]
-test = ["Test", "JuliaFormatter", "Quadmath", "Zygote", "StaticArrays"]
+test = ["Test", "TestExtras", "JuliaFormatter", "Quadmath", "Zygote", "StaticArrays"]

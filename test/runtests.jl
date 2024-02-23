@@ -3,6 +3,7 @@ using LinearAlgebra
 using Quadmath
 using StaticArrays
 using Test
+using TestExtras
 using Zygote
 
 @testset verbose = true begin
@@ -20,12 +21,24 @@ using Zygote
 
         @test value(unit(f1)) == 1 && udim(unit(f1)) == udim(f1)
         @test value(zero(f1)) == 0 && udim(zero(f1)) == udim(f1)
+
+        @constinferred unit(t1)
+        @constinferred value(t1)
+        @constinferred udim(t1)
+        @constinferred zero(t1)
     end
 
     @testset "commonly used quantities" begin
         @test dimensionless(2.5) == speed(2.5)
         @test time(2.5) == distance(2.5)
         @test frequency(2.5) == acceleration(2.5)
+
+        @constinferred dimensionless(2.5)
+        @constinferred speed(2.5)
+        @constinferred time(2.5)
+        @constinferred distance(2.5)
+        @constinferred frequency(2.5)
+        @constinferred acceleration(2.5)
     end
 
     @testset "comparison" begin
@@ -33,19 +46,41 @@ using Zygote
         @test !(t1 != t1)
         @test_throws DomainError t1 == f1
 
+        @constinferred (t1 == t1)
+        @constinferred (!(t1 != t1))
+
         @test t1 ≈ t1
         @test_throws DomainError t1 ≈ f1
+
+        @constinferred (t1 ≈ t1)
 
         @test 0 == zero(d1)
         @test 0 ≈ zero(d1)
 
+        @constinferred (0 == zero(d1))
+        @constinferred (0 ≈ zero(d1))
+
         @test (t1 > t2) || (t1 <= t2)
         @test (t1 < t2) || (t1 >= t2)
+
+        @constinferred (t1 > t2)
+        @constinferred (t1 <= t2)
+        @constinferred (t1 < t2)
+        @constinferred (t1 >= t2)
 
         @test (d1 > 0) || (d1 <= 0)
         @test (d1 < 0) || (d1 >= 0)
         @test (0 > d1) || (0 <= d1)
         @test (0 < d1) || (0 >= d1)
+
+        @constinferred (d1 > 0)
+        @constinferred (d1 <= 0)
+        @constinferred (d1 < 0)
+        @constinferred (d1 >= 0)
+        @constinferred (0 > d1)
+        @constinferred (0 <= d1)
+        @constinferred (0 < d1)
+        @constinferred (0 >= d1)
 
         @test_throws DomainError d1 > t1
         @test_throws DomainError d1 >= t1
@@ -60,6 +95,10 @@ using Zygote
         @test isfinite(t1)
         @test !isnan(t1)
         @test !isinf(t1)
+
+        @constinferred isfinite(t1)
+        @constinferred isnan(t1)
+        @constinferred isinf(t1)
     end
 
     @testset "addition and subtraction" begin
@@ -83,6 +122,14 @@ using Zygote
         @test_throws DomainError 1 - t1
         @test_throws DomainError t1 + 1
         @test_throws DomainError t1 - 1
+
+        @constinferred (t1 + t2)
+        @constinferred (t1 - t2)
+        @constinferred (-t1)
+        @constinferred (1 + d1)
+        @constinferred (d1 + 1)
+        @constinferred (1 - d1)
+        @constinferred (d1 - 1)
     end
 
     @testset "multiplication and division" begin
@@ -106,6 +153,13 @@ using Zygote
 
         @test 1 / (1 / d1) ≈ d1
         @test 2 * (d1 / 2) ≈ d1
+
+        @constinferred (t1 * f1)
+        @constinferred (t1 / f1)
+        @constinferred (1.2 * f1)
+        @constinferred (f1 * 1.3)
+        @constinferred (1.2 / f1)
+        @constinferred (f1 / 1.3)
     end
 
     @testset "power and root" begin
@@ -131,12 +185,23 @@ using Zygote
         @test_throws DomainError sqrt(t1)
         @test_throws DomainError cbrt(t1)
         @test_throws DomainError root(t1, 4)
+
+        @constinferred (t1^2)
+        @constinferred (2^d1)
+        @constinferred sqrt(d1)
+        @constinferred cbrt(d1)
+        @constinferred root(d1, 4)
     end
 
     @testset "exp and log" begin
         @test exp(log(d1)) ≈ d1
         @test 10^(log10(d1)) ≈ d1
         @test 2^(log2(d1)) ≈ d1
+
+        @constinferred exp(d1)
+        @constinferred log(d1)
+        @constinferred log10(d1)
+        @constinferred log2(d1)
     end
 
     @testset "trigonometric functions" begin
