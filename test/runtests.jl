@@ -217,6 +217,23 @@ using Zygote
         @test acot(cot(a1)) ≈ a1
 
         @test atan(t1, t2) ≈ atan(t1 / t2)
+
+        @constinferred sin(d1)
+        @constinferred csc(d1)
+        @constinferred cos(d1)
+        @constinferred sec(d1)
+        @constinferred tan(d1)
+        @constinferred cot(d1)
+
+        @constinferred asin(sin(a1))
+        @constinferred acos(cos(a1))
+        @constinferred atan(tan(a1))
+        @constinferred acsc(csc(a1))
+        @constinferred asec(sec(a1))
+        @constinferred acot(cot(a1))
+
+        @constinferred atan(t1, t2)
+        @constinferred atan(d1)
     end
 
     @testset "taylor-horner" begin
@@ -274,6 +291,8 @@ using Zygote
 
             @test x_y ≈ sx_sy.x
             @test sx_sy.d == sx[1].d + sy[1].d
+
+            @constinferred dot(sx, sy)
         end
     end
 
