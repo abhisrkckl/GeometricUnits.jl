@@ -1,24 +1,25 @@
 import Base.length
+using StaticArrays
 
 export TaylorSeries
 
-struct TaylorSeries{X<:AbstractFloat}
-    cs_rev::Vector{X}
+struct TaylorSeries{X<:AbstractFloat, N}
+    cs_rev::SVector{N, X}
     c0::GQ{X}
     t0::GQ{X}
 end
 
-function TaylorSeries(t0::GQ{X}, c0::GQ{X}, cs::Vector{GQ{X}}) where {X<:AbstractFloat}
+function TaylorSeries(t0::GQ{X}, c0::GQ{X}, cs::SVector{N, GQ{X}}) where {X<:AbstractFloat, N}
     _validate_taylor_series(t0, c0, cs)
-    cs_rev = reverse([c.x for c in cs])
+    cs_rev = reverse(map(c -> c.x, cs))
     return TaylorSeries(cs_rev, c0, t0)
 end
 
 function _validate_taylor_series(
     t0::GQ{X},
     c0::GQ{X},
-    cs::Vector{GQ{X}},
-) where {X<:AbstractFloat}
+    cs::SVector{N, GQ{X}},
+) where {N, X<:AbstractFloat}
     dcs = [c.d for c in cs]
     nc = length(cs)
     dc0 = c0.d

@@ -244,7 +244,7 @@ using Zygote
         c2 = acceleration(1.2)
         c3 = acceleration(0.5) / time(2.0)
         c4 = acceleration(1.2) / time(2.0)^2
-        cs = [c1, c2, c3, c4]
+        cs = SA[c1, c2, c3, c4]
         th = TaylorSeries(t0, c0, cs)
 
         t1 = time(1.0)
@@ -256,6 +256,9 @@ using Zygote
               (1 / 6) * c3 * t1^3 +
               (1 / 24) * c4 * t1^4
 
+        
+        @test (@ballocated ($th)($t1)) == 0
+
         d0 = dimensionless(2.3)
 
         @test_throws DomainError th(d0)
@@ -263,7 +266,7 @@ using Zygote
         @test_throws DomainError TaylorSeries(t0, d0, cs)
 
         c5 = acceleration(1.2) / time(2.0)^2
-        cs = [c1, c2, c3, c4, c5]
+        cs = SA[c1, c2, c3, c4, c5]
         @test_throws DomainError TaylorSeries(t0, c0, cs)
     end
 
