@@ -250,21 +250,15 @@ using Zygote
 
         dt = t1 - t0
 
-        @test taylor_horner_integral(dt, cs, c0) ≈
-             ( c0 +
-              c1 * dt +
-              (1 / 2) * c2 * dt^2 +
-              (1 / 6) * c3 * dt^3 +
-              (1 / 24) * c4 * dt^4)
+        @test taylor_horner_integral(dt, cs, c0) ≈ (
+            c0 + c1 * dt + (1 / 2) * c2 * dt^2 + (1 / 6) * c3 * dt^3 + (1 / 24) * c4 * dt^4
+        )
 
 
         @test (@ballocated taylor_horner_integral($dt, $cs, $c0)) == 0
 
         @test taylor_horner(dt, cs) ≈
-              (c1 +
-              c2 * dt +
-              (1 / 2) * c3 * dt^2 +
-              (1 / 6) * c4 * dt^3)
+              (c1 + c2 * dt + (1 / 2) * c3 * dt^2 + (1 / 6) * c4 * dt^3)
 
         @test (@ballocated taylor_horner($dt, $cs)) == 0
 
