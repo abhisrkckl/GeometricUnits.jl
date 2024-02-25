@@ -245,29 +245,33 @@ using Zygote
         c3 = acceleration(0.5) / time(2.0)
         c4 = acceleration(1.2) / time(2.0)^2
         cs = SA[c1, c2, c3, c4]
-        th = TaylorSeries(t0, c0, cs)
 
         t1 = time(1.0)
 
-        @test th(t1) ≈
-              c0 +
-              c1 * t1 +
-              (1 / 2) * c2 * t1^2 +
-              (1 / 6) * c3 * t1^3 +
-              (1 / 24) * c4 * t1^4
+        dt = t1 - t0
+
+        @test taylor_horner_integral(dt, cs, c0) ≈
+             ( c0 +
+              c1 * dt +
+              (1 / 2) * c2 * dt^2 +
+              (1 / 6) * c3 * dt^3 +
+              (1 / 24) * c4 * dt^4)
 
 
-        @test (@ballocated ($th)($t1)) == 0
+        @test (@ballocated taylor_horner_integral($dt, $cs, $c0)) == 0
+
+        @test taylor_horner(dt, cs) ≈
+              (c1 +
+              c2 * dt +
+              (1 / 2) * c3 * dt^2 +
+              (1 / 6) * c4 * dt^3)
+
+        @test (@ballocated taylor_horner($dt, $cs)) == 0
 
         d0 = dimensionless(2.3)
 
-        @test_throws DomainError th(d0)
-
-        @test_throws DomainError TaylorSeries(t0, d0, cs)
-
-        c5 = acceleration(1.2) / time(2.0)^2
-        cs = SA[c1, c2, c3, c4, c5]
-        @test_throws DomainError TaylorSeries(t0, c0, cs)
+        @test_throws DomainError taylor_horner_integral(dt, cs, d0)
+        @test_throws DomainError taylor_horner(d0, cs)
     end
 
     @testset "linear algebra" begin

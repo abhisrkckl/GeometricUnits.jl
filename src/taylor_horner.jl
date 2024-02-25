@@ -1,43 +1,23 @@
-import Base.length
-using StaticArrays
+export taylor_horner, taylor_horner_integral
 
-export TaylorSeries
-
-struct TaylorSeries{X<:AbstractFloat,N}
-    cs_rev::SVector{N,X}
-    c0::GQ{X}
-    t0::GQ{X}
-end
-
-function TaylorSeries(t0::GQ{X}, c0::GQ{X}, cs::SVector{N,GQ{X}}) where {X<:AbstractFloat,N}
-    _validate_taylor_series(t0, c0, cs)
-    cs_rev = reverse(map(c -> c.x, cs))
-    return TaylorSeries(cs_rev, c0, t0)
-end
-
-function _validate_taylor_series(
-    t0::GQ{X},
-    c0::GQ{X},
-    cs::SVector{N,GQ{X}},
-) where {N,X<:AbstractFloat}
-    dcs = [c.d for c in cs]
-    nc = length(cs)
-    dc0 = c0.d
-    dt0 = t0.d
-    dcs1 = dc0 .- (1:nc) .* dt0
-    if dcs != dcs1
-        dimension_mismatch((cs, c0, t0))
+function taylor_horner(x, cs)
+    n = length(cs)
+    result = GQ(zero(cs[n].x), cs[n].d - x.d)
+        
+    for ii in n:-1:1
+        result = result * x / ii + cs[ii]
     end
+
+    return result
 end
 
-length(th::TaylorSeries) = length(th.cs_rev) + 1
-
-function (th::TaylorSeries)(t::GQ)
-    result = zero(t.x)
-    t_t0 = (t - th.t0).x
-    n = length(th)
-    for (ii, c) in enumerate(th.cs_rev)
-        result = result * t_t0 / (n - ii + 1) + c
+function taylor_horner_integral(x, cs, c0)
+    n = length(cs)
+    result = GQ(zero(c0.x), cs[n].d - x.d)
+        
+    for ii in n:-1:1
+        result = result * x / (ii + 1) + cs[ii]
     end
-    return quantity_like(th.c0, th.c0.x + t_t0 * result)
+
+    return result * x + c0
 end
