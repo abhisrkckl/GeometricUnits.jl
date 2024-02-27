@@ -4,7 +4,7 @@ function taylor_horner(x, cs)
     n = length(cs)
     result = GQ(zero(cs[n].x), cs[n].d - x.d)
 
-    for ii = n:-1:1
+    @inbounds for ii = n:-1:1
         result = result * x / ii + cs[ii]
     end
 
@@ -15,7 +15,7 @@ function taylor_horner_integral(x, cs, c0)
     n = length(cs)
     result = GQ(zero(c0.x), cs[n].d - x.d)
 
-    for ii = n:-1:1
+    @inbounds for ii = n:-1:1
         result = result * x / (ii + 1) + cs[ii]
     end
 
