@@ -194,6 +194,11 @@ using Zygote
         @constinferred root(d1, 4)
     end
 
+    @testset "abs" begin
+       @test abs(d1) == d1
+       @test abs(-d1) == d1 
+    end
+
     @testset "exp and log" begin
         @test exp(log(d1)) ≈ d1
         @test 10^(log10(d1)) ≈ d1

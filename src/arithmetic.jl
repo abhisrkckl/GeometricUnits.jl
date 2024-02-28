@@ -39,3 +39,8 @@ sqrt(a::GQ) = (a.d % 2 == 0) ? GQ(sqrt(a.x), Int(a.d // 2)) : dimension_mismatch
 cbrt(a::GQ) = (a.d % 3 == 0) ? GQ(cbrt(a.x), Int(a.d // 3)) : dimension_mismatch(a)
 root(a::GQ, n::Integer) = a^(1 // n)
 root(a::GQ, q::Rational) = a^(1 // q)
+
+# == Absolute value ===
+import Base.abs
+
+abs(a::GQ) = GQ(abs(a.x), a.d)
