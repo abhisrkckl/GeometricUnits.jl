@@ -16,6 +16,13 @@ using Zygote
     d1 = dimensionless(6.0)
     a1 = dimensionless(0.2)
 
+    @testset "constructor" begin
+        t11 = GQ{Float32}(t1)
+        @test isa(t11.x, Float32)
+        @test t11.x == Float32(t1.x)
+        @test t11.d == t1.d
+    end
+
     @testset "unit and zero" begin
         @test value(unit(t1)) == 1 && udim(unit(t1)) == udim(t1)
         @test value(zero(t1)) == 0 && udim(zero(t1)) == udim(t1)
@@ -195,8 +202,8 @@ using Zygote
     end
 
     @testset "abs" begin
-       @test abs(d1) == d1
-       @test abs(-d1) == d1 
+        @test abs(d1) == d1
+        @test abs(-d1) == d1
     end
 
     @testset "exp and log" begin

@@ -10,6 +10,8 @@ struct GQ{X<:AbstractFloat}
     d::Int
 end
 
+GQ{X}(a::GQ{Y}) where {X,Y} = GQ(X(a.x), a.d)
+
 # Util functions
 export dimension_mismatch, dimensionless_forward
 
