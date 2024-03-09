@@ -317,12 +317,20 @@ using Zygote
         d1 = dimensionless(1.2)
         t1 = time(1.3)
         t2 = time(2.4)
-        
+        x = 0.9
+
         @test gradient(a -> value(oneunit(a)), d1) == (dimensionless(0.0),)
-        @test @ballocated(gradient($(a -> value(oneunit(a))), $d1) == ($dimensionless(0.0),)) == 0
+        @test @ballocated(
+            gradient($(a -> value(oneunit(a))), $d1) == ($dimensionless(0.0),)
+        ) == 0
 
         @test gradient(a -> value(zero(a)), d1) == (dimensionless(0.0),)
-        @test @ballocated(gradient($(a -> value(zero(a))), $d1) == ($dimensionless(0.0),)) == 0
+        @test @ballocated(
+            gradient($(a -> value(zero(a))), $d1) == ($dimensionless(0.0),)
+        ) == 0
+
+        @test gradient((t, x) -> value(quantity_like(t, x)), t1, x) == (zero(1 / t1), 1)
+        @test @ballocated(gradient((t, x) -> value(quantity_like(t, x)), $t1, $x)) == 0
 
         function func1(a, b, c, t)
             qt = time(t)
