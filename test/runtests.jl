@@ -314,6 +314,16 @@ using Zygote
     end
 
     @testset "derivatives" begin
+        d1 = dimensionless(1.2)
+        t1 = time(1.3)
+        t2 = time(2.4)
+        
+        @test gradient(a -> value(oneunit(a)), d1) == (dimensionless(0.0),)
+        @test @ballocated(gradient($(a -> value(oneunit(a))), $d1) == ($dimensionless(0.0),)) == 0
+
+        @test gradient(a -> value(zero(a)), d1) == (dimensionless(0.0),)
+        @test @ballocated(gradient($(a -> value(zero(a))), $d1) == ($dimensionless(0.0),)) == 0
+
         function func1(a, b, c, t)
             qt = time(t)
             qc = dimensionless(c)

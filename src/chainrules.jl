@@ -44,7 +44,7 @@ function ChainRulesCore.rrule(::typeof(quantity_like), a::GQ, x)
     function _pullback(ybar)
         fbar = NoTangent()
         abar = dimensionless_zero(a) * ybar
-        xbar = GQ(oneunit(y), q.d) * ybar
+        xbar = GQ(oneunit(y), a.d) * ybar
         return fbar, abar, xbar
     end
     return y, _pullback
