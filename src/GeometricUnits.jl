@@ -7,5 +7,6 @@ include("explog.jl")
 include("trigonometric.jl")
 include("taylor_horner.jl")
 include("linear_algebra.jl")
+include("chainrules.jl")
 
 end # module GeometricUnits
