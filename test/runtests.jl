@@ -310,6 +310,8 @@ using Zygote
             @constinferred dot(sx, sy)
 
             @test (@ballocated dot($sx, $sy)) == 0
+
+            @test transpose(x[1]) == x[1]
         end
     end
 
@@ -331,6 +333,12 @@ using Zygote
 
         @test gradient((t, x) -> value(quantity_like(t, x)), t1, x) == (zero(1 / t1), 1)
         @test @ballocated(gradient((t, x) -> value(quantity_like(t, x)), $t1, $x)) == 0
+
+        @test gradient(d -> value(d * d - 2 * d + 1), d1) == (2 * d1 - 2,)
+        @test @ballocated(gradient(d -> value(d * d - 2 * d + 1), $d1)) == 0
+
+        @test gradient(d -> value(-d + exp(d)), d1) == (-unit(d1) + exp(d1),)
+        @test @ballocated(gradient(d -> value(-d + exp(d)), $d1)) == 0
 
         function func1(a, b, c, t)
             qt = time(t)
