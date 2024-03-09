@@ -340,6 +340,11 @@ using Zygote
         @test gradient(d -> value(-d + exp(d)), d1) == (-unit(d1) + exp(d1),)
         @test @ballocated(gradient(d -> value(-d + exp(d)), $d1)) == 0
 
+        @test gradient(d -> value((d + 1) / d), d1) == gradient(d -> value(1 + 1 / d), d1)
+        @test gradient(d -> value((d + 1) / d), d1)[1] ≈ -1 / d1^2
+        @test @ballocated(gradient(d -> value((d + 1) / d), $d1)) == 0
+        @test @ballocated(gradient(d -> value(1 + 1 / d), $d1)) == 0
+
         function func1(a, b, c, t)
             qt = time(t)
             qc = dimensionless(c)

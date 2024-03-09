@@ -138,7 +138,7 @@ function ChainRulesCore.rrule(::typeof(/), a::GQ, b::GQ)
     function value_pullback(ybar)
         fbar = NoTangent()
         abar = ybar / b
-        bbar = -ybar / b / b
+        bbar = -ybar * a / b / b
         return fbar, abar, bbar
     end
     return y, value_pullback
