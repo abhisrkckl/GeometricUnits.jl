@@ -363,8 +363,8 @@ using Zygote
         gradient(a -> value(a^(3 // 1)), d1) == gradient(a -> value(a * a * a), d1)
         @test @ballocated(gradient(a -> value(a^(3 // 1)), $d1)) == 0
 
-        gradient(a -> value(sqrt(a*a*a)), d1) == gradient(a -> value(a^(3//2)), d1)
-        @test @ballocated(gradient(a -> value(sqrt(a*a*a)), $d1)) == 0
+        gradient(a -> value(sqrt(a * a * a)), d1) == gradient(a -> value(a^(3 // 2)), d1)
+        @test @ballocated(gradient(a -> value(sqrt(a * a * a)), $d1)) == 0
 
         gradient(a -> value(cbrt(sqrt(a))), d1) == gradient(a -> value(root(a, 6)), d1)
         @test @ballocated(gradient(a -> value(cbrt(sqrt(a))), $d1)) == 0
