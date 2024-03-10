@@ -317,6 +317,7 @@ using Zygote
 
     @testset "derivatives" begin
         d1 = dimensionless(1.2)
+        d2 = dimensionless(2.1)
         t1 = time(1.3)
         t2 = time(2.4)
         x = 0.9
@@ -344,6 +345,23 @@ using Zygote
         @test gradient(d -> value((d + 1) / d), d1)[1] ≈ -1 / d1^2
         @test @ballocated(gradient(d -> value((d + 1) / d), $d1)) == 0
         @test @ballocated(gradient(d -> value(1 + 1 / d), $d1)) == 0
+
+        @test gradient((a, b) -> value(a^b), d1, d2) ==
+              gradient((a, b) -> value(exp(b * log(a))), d1, d2)
+        @test @ballocated(gradient((a, b) -> value(a^b), $d1, $d2)) == 0
+        @test @ballocated(gradient((a, b) -> value(exp(b * log(a))), $d1, $d2)) == 0
+
+        gradient(a -> value(a^2.0), d1) == gradient(a -> value(a * a), d1)
+        @test @ballocated(gradient(a -> value(a^2.0), $d1)) == 0
+
+        gradient(a -> value(a^2), d1) == gradient(a -> value(a * a), d1)
+        @test_broken @ballocated(gradient(a -> value(a^2), $d1)) == 0
+
+        gradient(a -> value(a^unsigned(2)), d1) == gradient(a -> value(a * a), d1)
+        @test_broken @ballocated(gradient(a -> value(a^unsigned(2)), $d1)) == 0
+
+        gradient(a -> value(a^(3 // 1)), d1) == gradient(a -> value(a * a * a), d1)
+        @test @ballocated(gradient(a -> value(a^(3 // 1)), $d1)) == 0
 
         function func1(a, b, c, t)
             qt = time(t)

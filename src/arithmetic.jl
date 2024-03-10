@@ -29,7 +29,7 @@ export root
 a::GQ^b::GQ = (a.d == 0 && b.d == 0) ? GQ(a.x^b.x, 0) : dimension_mismatch((a, b))
 x::Real^b::GQ = dimensionless(float(x))^b
 a::GQ^y::Real = a^dimensionless(float(y))
-a::GQ^n::Integer = GQ(a.x^n, a.d * n)
+a::GQ^n::Integer = GQ(a.x^n, a.d * signed(n))
 a::GQ^q::Rational =
     ((a.d * q).den == 1) ? GQ(a.x^q, (a.d * q).num) : dimension_mismatch((a, q))
 

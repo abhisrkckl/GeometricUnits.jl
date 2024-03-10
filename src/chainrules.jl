@@ -155,7 +155,18 @@ function ChainRulesCore.rrule(::typeof(^), a::GQ, b::GQ)
     return y, value_pullback
 end
 
-function ChainRulesCore.rrule(::typeof(^), a::GQ, n::Union{Integer,Rational})
+function ChainRulesCore.rrule(::typeof(^), a::GQ, n::Integer)
+    y = a^n
+    function value_pullback(ybar)
+        fbar = NoTangent()
+        abar = ybar * signed(n) * y / a
+        nbar = NoTangent()
+        return fbar, abar, nbar
+    end
+    return y, value_pullback
+end
+
+function ChainRulesCore.rrule(::typeof(^), a::GQ, n::Rational)
     y = a^n
     function value_pullback(ybar)
         fbar = NoTangent()
@@ -186,7 +197,18 @@ function ChainRulesCore.rrule(::typeof(cbrt), a::GQ)
     return y, value_pullback
 end
 
-function ChainRulesCore.rrule(::typeof(root), a::GQ, n::Union{Integer,Rational})
+function ChainRulesCore.rrule(::typeof(root), a::GQ, n::Integer)
+    y = root(a, n)
+    function value_pullback(ybar)
+        fbar = NoTangent()
+        abar = ybar * (1 // n) * y / a
+        nbar = NoTangent()
+        return fbar, abar, nbar
+    end
+    return y, value_pullback
+end
+
+function ChainRulesCore.rrule(::typeof(root), a::GQ, n::Rational)
     y = root(a, n)
     function value_pullback(ybar)
         fbar = NoTangent()
