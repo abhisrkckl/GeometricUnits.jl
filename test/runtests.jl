@@ -379,6 +379,11 @@ using Zygote
               gradient(a -> value(log(a) / log(10)), d1)
         @test @ballocated(gradient(a -> value(log10(2 * a)), $d1)) == 0
 
+        @test gradient(a -> value(tan(a)), d1)[1] ≈
+              gradient(a -> value(sin(a) / cos(a)), d1)[1]
+        @test @ballocated(gradient(a -> value(tan(a)), $d1)) == 0
+        @test @ballocated(gradient(a -> value(sin(a) / cos(a)), $d1)) == 0
+
         function func1(a, b, c, t)
             qt = time(t)
             qc = dimensionless(c)
