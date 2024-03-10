@@ -351,28 +351,30 @@ using Zygote
         @test @ballocated(gradient((a, b) -> value(a^b), $d1, $d2)) == 0
         @test @ballocated(gradient((a, b) -> value(exp(b * log(a))), $d1, $d2)) == 0
 
-        gradient(a -> value(a^2.0), d1) == gradient(a -> value(a * a), d1)
+        @test gradient(a -> value(a^2.0), d1) == gradient(a -> value(a * a), d1)
         @test @ballocated(gradient(a -> value(a^2.0), $d1)) == 0
 
-        gradient(a -> value(a^2), d1) == gradient(a -> value(a * a), d1)
+        @test gradient(a -> value(a^2), d1) == gradient(a -> value(a * a), d1)
         @test_broken @ballocated(gradient(a -> value(a^2), $d1)) == 0
 
-        gradient(a -> value(a^unsigned(2)), d1) == gradient(a -> value(a * a), d1)
+        @test gradient(a -> value(a^unsigned(2)), d1) == gradient(a -> value(a * a), d1)
         @test_broken @ballocated(gradient(a -> value(a^unsigned(2)), $d1)) == 0
 
-        gradient(a -> value(a^(3 // 1)), d1) == gradient(a -> value(a * a * a), d1)
+        @test gradient(a -> value(a^(3 // 1)), d1) == gradient(a -> value(a * a * a), d1)
         @test @ballocated(gradient(a -> value(a^(3 // 1)), $d1)) == 0
 
-        gradient(a -> value(sqrt(a * a * a)), d1) == gradient(a -> value(a^(3 // 2)), d1)
+        @test gradient(a -> value(sqrt(a * a * a)), d1) == gradient(a -> value(a^(3 // 2)), d1)
         @test @ballocated(gradient(a -> value(sqrt(a * a * a)), $d1)) == 0
 
-        gradient(a -> value(cbrt(sqrt(a))), d1) == gradient(a -> value(root(a, 6)), d1)
+        @test gradient(a -> value(cbrt(sqrt(a))), d1) == gradient(a -> value(root(a, 6)), d1)
         @test @ballocated(gradient(a -> value(cbrt(sqrt(a))), $d1)) == 0
         @test @ballocated(gradient(a -> value(root(a, 6)), $d1)) == 0
 
-        gradient(a -> value(cbrt(sqrt(a))), d1) == gradient(a -> value(root(a, 6)), d1)
-        @test @ballocated(gradient(a -> value(cbrt(sqrt(a))), $d1)) == 0
-        @test @ballocated(gradient(a -> value(root(a, 6)), $d1)) == 0
+        @test gradient(a -> value(log2(a)), d1) == gradient(a -> value(log(a) / log(2)), d1)
+        @test @ballocated(gradient(a -> value(log2(a)), $d1)) == 0
+
+        @test gradient(a -> value(log10(2*a)), d1) == gradient(a -> value(log(a) / log(10)), d1)
+        @test @ballocated(gradient(a -> value(log10(2*a)), $d1)) == 0
 
         function func1(a, b, c, t)
             qt = time(t)
