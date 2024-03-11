@@ -373,6 +373,10 @@ using Zygote
         @test @ballocated(gradient(a -> value(cbrt(sqrt(a))), $d1)) == 0
         @test @ballocated(gradient(a -> value(root(a, 6)), $d1)) == 0
 
+        @test gradient(a -> value(root(a, 2 // 3)), d1) ==
+              gradient(a -> value(sqrt(a * a * a)), d1)
+        @test @ballocated(gradient(a -> value(root(a, 2 // 3)), $d1)) == 0
+
         @test gradient(a -> value(log2(a)), d1) == gradient(a -> value(log(a) / log(2)), d1)
         @test @ballocated(gradient(a -> value(log2(a)), $d1)) == 0
 
@@ -398,6 +402,11 @@ using Zygote
         @test gradient(a -> value(asin(a)), d3)[1] == -gradient(a -> value(acos(a)), d3)[1]
         @test @ballocated(gradient(a -> value(asin(a)), $d3)) == 0
         @test @ballocated(gradient(a -> value(acos(a)), $d3)) == 0
+
+        @test gradient(a -> value(atan(sin(a) / cos(a))), d1)[1] == oneunit(d1)
+        @test gradient(a -> value(atan(sin(a), cos(a))), d1)[1] == oneunit(d1)
+        @test_broken @ballocated(gradient(a -> value(atan(sin(a) / cos(a))), $d1)) == 0
+        @test @ballocated(gradient(a -> value(atan(sin(a), cos(a))), $d1)) == 0
 
         function func1(a, b, c, t)
             qt = time(t)

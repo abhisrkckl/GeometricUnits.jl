@@ -16,7 +16,8 @@ asin(a::GQ) = dimensionless_forward(a, asin)
 acos(a::GQ) = dimensionless_forward(a, acos)
 atan(a::GQ) = dimensionless_forward(a, atan)
 
-atan(a::GQ, b::GQ) = (a.d == b.d) ? atan(a.x, b.x) : dimension_mismatch((a, b))
+atan(a::GQ, b::GQ) =
+    (a.d == b.d) ? dimensionless(atan(a.x, b.x)) : dimension_mismatch((a, b))
 
 acsc(a::GQ) = dimensionless_forward(a, acsc)
 asec(a::GQ) = dimensionless_forward(a, asec)
