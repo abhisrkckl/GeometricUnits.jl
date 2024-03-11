@@ -15,17 +15,6 @@ function ChainRulesCore.rrule(::Type{GQ{X}}, x::X, d::Int) where {X<:AbstractFlo
     return y, _pullback
 end
 
-function ChainRulesCore.rrule(::Type{GQ{Float64}}, x::Float64, d::Int)
-    y = GQ(x, d)
-    function _pullback(ybar)
-        fbar = NoTangent()
-        xbar = oneunit(y) * ybar
-        dbar = NoTangent()
-        return fbar, xbar, dbar
-    end
-    return y, _pullback
-end
-
 (p::ProjectTo{X})(a::GQ) where {X<:AbstractFloat} = X(a.x)
 
 Zygote._gradcopy!(dst::AbstractArray, src::GQ) = copyto!(dst, src)
@@ -367,6 +356,36 @@ function ChainRulesCore.rrule(::typeof(atan), a::GQ, b::GQ)
         abar = @thunk(ybar * b / (a * a + b * b))
         bbar = @thunk(-ybar * a / (a * a + b * b))
         return fbar, abar, bbar
+    end
+    return y, _pullback
+end
+
+function ChainRulesCore.rrule(::typeof(acsc), a::GQ)
+    y = acsc(a)
+    function _pullback(ybar)
+        fbar = NoTangent()
+        abar = -ybar / a / sqrt(a * a - 1)
+        return fbar, abar
+    end
+    return y, _pullback
+end
+
+function ChainRulesCore.rrule(::typeof(asec), a::GQ)
+    y = asec(a)
+    function _pullback(ybar)
+        fbar = NoTangent()
+        abar = ybar / a / sqrt(a * a - 1)
+        return fbar, abar
+    end
+    return y, _pullback
+end
+
+function ChainRulesCore.rrule(::typeof(acot), a::GQ)
+    y = acot(a)
+    function _pullback(ybar)
+        fbar = NoTangent()
+        abar = -ybar / (1 + a * a)
+        return fbar, abar
     end
     return y, _pullback
 end

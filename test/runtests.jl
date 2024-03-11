@@ -410,6 +410,13 @@ using Zygote
         @test_broken @ballocated(gradient(a -> value(atan(sin(a) / cos(a))), $d1)) == 0
         @test @ballocated(gradient(a -> value(atan(sin(a), cos(a))), $d1)) == 0
 
+        @test gradient(a -> value(asin(sin(a))), d3)[1].x ≈ 1
+        @test gradient(a -> value(acos(cos(a))), d3)[1].x ≈ 1
+        @test gradient(a -> value(atan(tan(a))), d3)[1].x ≈ 1
+        @test gradient(a -> value(acsc(csc(a))), d3)[1].x ≈ 1
+        @test gradient(a -> value(asec(sec(a))), d3)[1].x ≈ 1
+        @test gradient(a -> value(acot(cot(a))), d3)[1].x ≈ 1
+
         function func1(a, b, c, t)
             qt = time(t)
             qc = dimensionless(c)
