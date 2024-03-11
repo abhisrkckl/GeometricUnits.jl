@@ -15,6 +15,17 @@ function ChainRulesCore.rrule(::Type{GQ{X}}, x::X, d::Int) where {X<:AbstractFlo
     return y, _pullback
 end
 
+function ChainRulesCore.rrule(::Type{GQ{Float64}}, x::Float64, d::Int)
+    y = GQ(x, d)
+    function _pullback(ybar)
+        fbar = NoTangent()
+        xbar = oneunit(y) * ybar
+        dbar = NoTangent()
+        return fbar, xbar, dbar
+    end
+    return y, _pullback
+end
+
 (p::ProjectTo{X})(a::GQ) where {X<:AbstractFloat} = X(a.x)
 
 Zygote._gradcopy!(dst::AbstractArray, src::GQ) = copyto!(dst, src)
