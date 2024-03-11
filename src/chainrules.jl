@@ -105,8 +105,8 @@ function ChainRulesCore.rrule(::typeof(+), a::GQ, b::GQ)
     y = a + b
     function _pullback(ybar)
         fbar = NoTangent()
-        abar = dimensionless_unit(a) * ybar
-        bbar = dimensionless_unit(b) * ybar
+        abar = @thunk(dimensionless_unit(a) * ybar)
+        bbar = @thunk(dimensionless_unit(b) * ybar)
         return fbar, abar, bbar
     end
     return y, _pullback
@@ -116,8 +116,8 @@ function ChainRulesCore.rrule(::typeof(-), a::GQ, b::GQ)
     y = a - b
     function _pullback(ybar)
         fbar = NoTangent()
-        abar = dimensionless_unit(a) * ybar
-        bbar = -dimensionless_unit(b) * ybar
+        abar = @thunk(dimensionless_unit(a) * ybar)
+        bbar = @thunk(-dimensionless_unit(b) * ybar)
         return fbar, abar, bbar
     end
     return y, _pullback
@@ -137,8 +137,8 @@ function ChainRulesCore.rrule(::typeof(*), a::GQ, b::GQ)
     y = a * b
     function _pullback(ybar)
         fbar = NoTangent()
-        abar = b * ybar
-        bbar = a * ybar
+        abar = @thunk(b * ybar)
+        bbar = @thunk(a * ybar)
         return fbar, abar, bbar
     end
     return y, _pullback
@@ -148,8 +148,8 @@ function ChainRulesCore.rrule(::typeof(/), a::GQ, b::GQ)
     y = a / b
     function _pullback(ybar)
         fbar = NoTangent()
-        abar = ybar / b
-        bbar = -ybar * a / b / b
+        abar = @thunk(ybar / b)
+        bbar = @thunk(-ybar * a / b / b)
         return fbar, abar, bbar
     end
     return y, _pullback
@@ -159,8 +159,8 @@ function ChainRulesCore.rrule(::typeof(^), a::GQ, b::GQ)
     y = a^b
     function _pullback(ybar)
         fbar = NoTangent()
-        abar = ybar * b * y / a
-        bbar = ybar * y * log(a)
+        abar = @thunk(ybar * b * y / a)
+        bbar = @thunk(ybar * y * log(a))
         return fbar, abar, bbar
     end
     return y, _pullback
@@ -364,8 +364,8 @@ function ChainRulesCore.rrule(::typeof(atan), a::GQ, b::GQ)
     y = atan(a, b)
     function _pullback(ybar)
         fbar = NoTangent()
-        abar = ybar * b / (a * a + b * b)
-        bbar = -ybar * a / (a * a + b * b)
+        abar = @thunk(ybar * b / (a * a + b * b))
+        bbar = @thunk(-ybar * a / (a * a + b * b))
         return fbar, abar, bbar
     end
     return y, _pullback
