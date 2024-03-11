@@ -289,8 +289,10 @@ using Zygote
 
             x_y = dot(x, y)
             sx_sy = dot(sx, sy)
+            sxTsy = transpose(sx) * sy
 
             @test x_y ≈ sx_sy.x
+            @test x_y ≈ sxTsy.x
             @test sx_sy.d == sx[1].d + sy[1].d
 
             @test (@ballocated dot($sx, $sy)) == 0
@@ -309,7 +311,7 @@ using Zygote
 
             @constinferred dot(sx, sy)
 
-            @test (@ballocated dot($sx, $sy)) == 0
+            @test @ballocated(dot($sx, $sy)) == 0
 
             @test transpose(x[1]) == x[1]
         end
