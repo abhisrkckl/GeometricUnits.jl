@@ -318,6 +318,7 @@ using Zygote
     @testset "derivatives" begin
         d1 = dimensionless(1.2)
         d2 = dimensionless(2.1)
+        d3 = dimensionless(0.5)
         t1 = time(1.3)
         t2 = time(2.4)
         x = 0.9
@@ -383,6 +384,20 @@ using Zygote
               gradient(a -> value(sin(a) / cos(a)), d1)[1]
         @test @ballocated(gradient(a -> value(tan(a)), $d1)) == 0
         @test @ballocated(gradient(a -> value(sin(a) / cos(a)), $d1)) == 0
+
+        @test gradient(a -> value(sec(a)), d1)[1] ≈ gradient(a -> value(1 / cos(a)), d1)[1]
+        @test @ballocated(gradient(a -> value(sec(a)), $d1)) == 0
+
+        @test gradient(a -> value(csc(a)), d1)[1] ≈ gradient(a -> value(1 / sin(a)), d1)[1]
+        @test @ballocated(gradient(a -> value(csc(a)), $d1)) == 0
+
+        @test gradient(a -> value(cot(a)), d1)[1] ≈
+              gradient(a -> value(cos(a) / sin(a)), d1)[1]
+        @test @ballocated(gradient(a -> value(cot(a)), $d1)) == 0
+
+        @test gradient(a -> value(asin(a)), d3)[1] == -gradient(a -> value(acos(a)), d3)[1]
+        @test @ballocated(gradient(a -> value(asin(a)), $d3)) == 0
+        @test @ballocated(gradient(a -> value(acos(a)), $d3)) == 0
 
         function func1(a, b, c, t)
             qt = time(t)

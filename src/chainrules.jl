@@ -306,7 +306,7 @@ function ChainRulesCore.rrule(::typeof(sec), a::GQ)
         abar = ybar * tan(a) * y
         return fbar, abar
     end
-    return y, value_pullsecback
+    return y, value_pullback
 end
 
 function ChainRulesCore.rrule(::typeof(cot), a::GQ)
