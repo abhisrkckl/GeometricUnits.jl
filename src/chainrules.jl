@@ -389,3 +389,15 @@ function ChainRulesCore.rrule(::typeof(acot), a::GQ)
     end
     return y, _pullback
 end
+
+# function ChainRulesCore.rrule(::typeof(taylor_horner), x::GQ, cs)
+#     y = taylor_horner(x, cs)
+#     function _pullback(ybar)
+#         fbar = NoTangent()
+
+#         result = GQ(zero(cs[n].x), cs[n].d - x.d)
+#         @inbounds for ii = n:-1:1
+#             result = result * x / ii + cs[ii]
+#         end
+#     end
+# end

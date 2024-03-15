@@ -21,3 +21,14 @@ function taylor_horner_integral(x, cs, c0)
 
     return result * x + c0
 end
+
+# function taylor_horner_derivative(x, cs, j)
+#     n = length(cs)
+#     result = GQ(zero(cs[n].x), cs[n].d - x.d)
+
+#     @inbounds for ii = n:-1:(1+j)
+#         result = result * x / (ii - j) + cs[ii]
+#     end
+
+#     return result
+# end
