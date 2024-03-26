@@ -47,6 +47,7 @@ using Zygote
         @constinferred distance(2.5)
         @constinferred frequency(2.5)
         @constinferred acceleration(2.5)
+        @constinferred mass(2.1)
     end
 
     @testset "comparison" begin

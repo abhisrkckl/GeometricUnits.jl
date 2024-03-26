@@ -39,11 +39,12 @@ udim(a::GQ) = a.d
 
 # == Commonly used quantities ===
 import Base.time
-export dimensionless, speed, distance, frequency, acceleration
+export dimensionless, speed, distance, mass, frequency, acceleration
 
 dimensionless(x) = GQ(x, 0)
 speed(x) = dimensionless(x)
 time(x) = GQ(x, 1)
 distance(x) = time(x)
+mass(x) = time(x)
 frequency(x) = GQ(x, -1)
 acceleration(x) = frequency(x)
