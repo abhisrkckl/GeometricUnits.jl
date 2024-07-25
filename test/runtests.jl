@@ -222,6 +222,7 @@ using Zygote
         @test sin(d1) ≈ 1 / csc(d1)
         @test cos(d1) ≈ 1 / sec(d1)
         @test tan(d1) ≈ 1 / cot(d1)
+        @test sincos(d1) == (sin(d1), cos(d1))
 
         @test asin(sin(a1)) ≈ a1
         @test acos(cos(a1)) ≈ a1

@@ -1,8 +1,9 @@
 # Trigonometric functions
-import Base.sin, Base.cos, Base.tan, Base.csc, Base.sec, Base.cot
+import Base.sin, Base.cos, Base.sincos, Base.tan, Base.csc, Base.sec, Base.cot
 
 sin(a::GQ) = dimensionless_forward(a, sin)
 cos(a::GQ) = dimensionless_forward(a, cos)
+sincos(a::GQ) = (a.d == 0) ? dimensionless.(sincos(a.x)) : dimension_mismatch((a, f))
 tan(a::GQ) = dimensionless_forward(a, tan)
 
 csc(a::GQ) = dimensionless_forward(a, csc)
