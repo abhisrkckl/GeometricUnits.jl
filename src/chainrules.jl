@@ -1,5 +1,6 @@
 using ChainRulesCore
 using Zygote
+import Zygote: _gradcopy!
 
 dimensionless_zero(a::GQ) = dimensionless(zero(value(a)))
 dimensionless_unit(a::GQ) = dimensionless(oneunit(value(a)))
@@ -17,7 +18,7 @@ end
 
 (p::ProjectTo{X})(a::GQ) where {X<:AbstractFloat} = X(a.x)
 
-Zygote._gradcopy!(dst::AbstractArray, src::GQ) = copyto!(dst, src)
+_gradcopy!(dst::AbstractArray, src::GQ) = copyto!(dst, src)
 
 function ChainRulesCore.rrule(::typeof(oneunit), a::GQ)
     y = oneunit(a)
