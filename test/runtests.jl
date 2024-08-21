@@ -423,6 +423,12 @@ using Zygote
         @test gradient(a -> value(asec(sec(a))), d3)[1].x ≈ 1
         @test gradient(a -> value(acot(cot(a))), d3)[1].x ≈ 1
 
+        a = dimensionless(1.1)
+        (s, c), _back = pullback(sincos, a)
+        @test _back((1, 0))[1] == c
+        @test _back((0, 1))[1] == -s
+        @test @ballocated(gradient(a -> value(sum(sincos(a))), $a)) == 0
+
         # function func1(a, b, c, t)
         #     qt = time(t)
         #     qc = dimensionless(c)
