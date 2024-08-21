@@ -280,6 +280,17 @@ function ChainRulesCore.rrule(::typeof(cos), a::GQ)
     return y, _pullback
 end
 
+function ChainRulesCore.rrule(::typeof(sincos), a::GQ)
+    sina, cosa = sincos(a)
+    function _pullback(ybar)
+        ybar1, ybar2 = ybar
+        fbar = NoTangent()
+        abar = ybar1 * cosa - ybar2 * sina
+        return fbar, abar
+    end
+    return (sina, cosa), _pullback
+end
+
 function ChainRulesCore.rrule(::typeof(tan), a::GQ)
     y = tan(a)
     function _pullback(ybar)
