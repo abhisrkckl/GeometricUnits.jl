@@ -202,9 +202,13 @@ using Zygote
         @constinferred root(d1, 4)
     end
 
-    @testset "abs" begin
+    @testset "abs and sign" begin
         @test abs(d1) == d1
         @test abs(-d1) == d1
+
+        @test sign(d1) == 1
+        @test sign(-d1) == -1
+        @test sign(zero(d1)) == 0
     end
 
     @testset "exp and log" begin

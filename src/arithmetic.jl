@@ -43,3 +43,8 @@ root(a::GQ, n::Union{Integer,Rational}) = a^(1 // n)
 import Base.abs
 
 abs(a::GQ) = GQ(abs(a.x), a.d)
+
+# == Sign ==============
+import Base.sign
+
+sign(a::GQ) = sign(a.x)
