@@ -48,3 +48,9 @@ abs(a::GQ) = GQ(abs(a.x), a.d)
 import Base.sign
 
 sign(a::GQ) = sign(a.x)
+
+# == Floor and ceiling =
+import Base.floor, Base.ceil
+
+floor(a::GQ) = GQ(floor(a.x), a.d)
+ceil(a::GQ) = GQ(ceil(a.x), a.d)

@@ -202,13 +202,16 @@ using Zygote
         @constinferred root(d1, 4)
     end
 
-    @testset "abs and sign" begin
+    @testset "abs, sign, ceil, and floor" begin
         @test abs(d1) == d1
         @test abs(-d1) == d1
 
         @test sign(d1) == 1
         @test sign(-d1) == -1
         @test sign(zero(d1)) == 0
+
+        @test floor(frequency(1.1)) == frequency(1.0)
+        @test ceil(frequency(1.1)) == frequency(2.0)
     end
 
     @testset "exp and log" begin
