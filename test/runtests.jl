@@ -21,6 +21,7 @@ using Zygote
         @test isa(t11.x, Float32)
         @test t11.x == Float32(t1.x)
         @test t11.d == t1.d
+        @test length(t11) == 1
     end
 
     @testset "unit and zero" begin
@@ -169,6 +170,7 @@ using Zygote
         @constinferred (f1 * 1.3)
         @constinferred (1.2 / f1)
         @constinferred (f1 / 1.3)
+        @constinferred (d1 .* (t1, f1))
     end
 
     @testset "power and root" begin

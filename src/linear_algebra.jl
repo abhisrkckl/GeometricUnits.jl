@@ -1,4 +1,4 @@
-import Base.iterate
+import Base.iterate, Base.length
 import LinearAlgebra.dot, LinearAlgebra.transpose
 
 iterate(a::GQ) = (a, nothing)
