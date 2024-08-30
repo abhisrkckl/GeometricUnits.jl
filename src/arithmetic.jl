@@ -42,7 +42,7 @@ root(a::GQ, ::Val{q}) where {q} = a^Val(1 // q)
 # == Absolute value ===
 import Base.abs
 
-abs(a::GQ) = GQ(abs(a.x), a.d)
+abs(a::GQ{d,X}) where {d,X} = GQ{d}(abs(a.x))
 
 # == Sign ==============
 import Base.sign
@@ -52,5 +52,5 @@ sign(a::GQ) = sign(a.x)
 # == Floor and ceiling =
 import Base.floor, Base.ceil
 
-floor(a::GQ) = GQ(floor(a.x), a.d)
-ceil(a::GQ) = GQ(ceil(a.x), a.d)
+floor(a::GQ{d,X}) where {d,X} = GQ{d}(floor(a.x))
+ceil(a::GQ{d,X}) where {d,X} = GQ{d}(ceil(a.x))
