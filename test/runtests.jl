@@ -389,91 +389,91 @@ using Zygote
               gradient(a -> value(a^(3 // 2)), d1)
         @test @ballocated(gradient(a -> value(sqrt(a * a * a)), $d1)) == 0
 
-    #     @test gradient(a -> value(cbrt(sqrt(a))), d1) ==
-    #           gradient(a -> value(root(a, 6)), d1)
-    #     @test @ballocated(gradient(a -> value(cbrt(sqrt(a))), $d1)) == 0
-    #     @test @ballocated(gradient(a -> value(root(a, 6)), $d1)) == 0
+        @test gradient(a -> value(cbrt(sqrt(a))), d1) ==
+              gradient(a -> value(root(a, 6)), d1)
+        @test @ballocated(gradient(a -> value(cbrt(sqrt(a))), $d1)) == 0
+        @test @ballocated(gradient(a -> value(root(a, 6)), $d1)) == 0
 
-    #     @test gradient(a -> value(root(a, 2 // 3)), d1) ==
-    #           gradient(a -> value(sqrt(a * a * a)), d1)
-    #     @test @ballocated(gradient(a -> value(root(a, 2 // 3)), $d1)) == 0
+        @test gradient(a -> value(root(a, 2 // 3)), d1) ==
+              gradient(a -> value(sqrt(a * a * a)), d1)
+        @test @ballocated(gradient(a -> value(root(a, 2 // 3)), $d1)) == 0
 
-    #     @test gradient(a -> value(log2(a)), d1) == gradient(a -> value(log(a) / log(2)), d1)
-    #     @test @ballocated(gradient(a -> value(log2(a)), $d1)) == 0
+        @test gradient(a -> value(log2(a)), d1) == gradient(a -> value(log(a) / log(2)), d1)
+        @test @ballocated(gradient(a -> value(log2(a)), $d1)) == 0
 
-    #     @test gradient(a -> value(log10(2 * a)), d1) ==
-    #           gradient(a -> value(log(a) / log(10)), d1)
-    #     @test @ballocated(gradient(a -> value(log10(2 * a)), $d1)) == 0
+        @test gradient(a -> value(log10(2 * a)), d1) ==
+              gradient(a -> value(log(a) / log(10)), d1)
+        @test @ballocated(gradient(a -> value(log10(2 * a)), $d1)) == 0
 
-    #     @test gradient(a -> value(tan(a)), d1)[1] ≈
-    #           gradient(a -> value(sin(a) / cos(a)), d1)[1]
-    #     @test @ballocated(gradient(a -> value(tan(a)), $d1)) == 0
-    #     @test @ballocated(gradient(a -> value(sin(a) / cos(a)), $d1)) == 0
+        @test gradient(a -> value(tan(a)), d1)[1] ≈
+              gradient(a -> value(sin(a) / cos(a)), d1)[1]
+        @test @ballocated(gradient(a -> value(tan(a)), $d1)) == 0
+        @test @ballocated(gradient(a -> value(sin(a) / cos(a)), $d1)) == 0
 
-    #     @test gradient(a -> value(sec(a)), d1)[1] ≈ gradient(a -> value(1 / cos(a)), d1)[1]
-    #     @test @ballocated(gradient(a -> value(sec(a)), $d1)) == 0
+        @test gradient(a -> value(sec(a)), d1)[1] ≈ gradient(a -> value(1 / cos(a)), d1)[1]
+        @test @ballocated(gradient(a -> value(sec(a)), $d1)) == 0
 
-    #     @test gradient(a -> value(csc(a)), d1)[1] ≈ gradient(a -> value(1 / sin(a)), d1)[1]
-    #     @test @ballocated(gradient(a -> value(csc(a)), $d1)) == 0
+        @test gradient(a -> value(csc(a)), d1)[1] ≈ gradient(a -> value(1 / sin(a)), d1)[1]
+        @test @ballocated(gradient(a -> value(csc(a)), $d1)) == 0
 
-    #     @test gradient(a -> value(cot(a)), d1)[1] ≈
-    #           gradient(a -> value(cos(a) / sin(a)), d1)[1]
-    #     @test @ballocated(gradient(a -> value(cot(a)), $d1)) == 0
+        @test gradient(a -> value(cot(a)), d1)[1] ≈
+              gradient(a -> value(cos(a) / sin(a)), d1)[1]
+        @test @ballocated(gradient(a -> value(cot(a)), $d1)) == 0
 
-    #     @test gradient(a -> value(asin(a)), d3)[1] == -gradient(a -> value(acos(a)), d3)[1]
-    #     @test @ballocated(gradient(a -> value(asin(a)), $d3)) == 0
-    #     @test @ballocated(gradient(a -> value(acos(a)), $d3)) == 0
+        @test gradient(a -> value(asin(a)), d3)[1] == -gradient(a -> value(acos(a)), d3)[1]
+        @test @ballocated(gradient(a -> value(asin(a)), $d3)) == 0
+        @test @ballocated(gradient(a -> value(acos(a)), $d3)) == 0
 
-    #     @test gradient(a -> value(atan(sin(a) / cos(a))), d1)[1] == oneunit(d1)
-    #     @test gradient(a -> value(atan(sin(a), cos(a))), d1)[1] == oneunit(d1)
-    #     @test_broken @ballocated(gradient(a -> value(atan(sin(a) / cos(a))), $d1)) == 0
-    #     @test @ballocated(gradient(a -> value(atan(sin(a), cos(a))), $d1)) == 0
+        @test gradient(a -> value(atan(sin(a) / cos(a))), d1)[1] == oneunit(d1)
+        @test gradient(a -> value(atan(sin(a), cos(a))), d1)[1] == oneunit(d1)
+        @test @ballocated(gradient(a -> value(atan(sin(a) / cos(a))), $d1)) == 0
+        @test @ballocated(gradient(a -> value(atan(sin(a), cos(a))), $d1)) == 0
 
-    #     @test gradient(a -> value(asin(sin(a))), d3)[1].x ≈ 1
-    #     @test gradient(a -> value(acos(cos(a))), d3)[1].x ≈ 1
-    #     @test gradient(a -> value(atan(tan(a))), d3)[1].x ≈ 1
-    #     @test gradient(a -> value(acsc(csc(a))), d3)[1].x ≈ 1
-    #     @test gradient(a -> value(asec(sec(a))), d3)[1].x ≈ 1
-    #     @test gradient(a -> value(acot(cot(a))), d3)[1].x ≈ 1
+        @test gradient(a -> value(asin(sin(a))), d3)[1].x ≈ 1
+        @test gradient(a -> value(acos(cos(a))), d3)[1].x ≈ 1
+        @test gradient(a -> value(atan(tan(a))), d3)[1].x ≈ 1
+        @test gradient(a -> value(acsc(csc(a))), d3)[1].x ≈ 1
+        @test gradient(a -> value(asec(sec(a))), d3)[1].x ≈ 1
+        @test gradient(a -> value(acot(cot(a))), d3)[1].x ≈ 1
 
-    #     a = dimensionless(1.1)
-    #     (s, c), _back = pullback(sincos, a)
-    #     @test _back((1, 0))[1] == c
-    #     @test _back((0, 1))[1] == -s
-    #     @test @ballocated(gradient(a -> value(sum(sincos(a))), $a)) == 0
+        a = dimensionless(1.1)
+        (s, c), _back = pullback(sincos, a)
+        @test _back((1, 0))[1] == c
+        @test _back((0, 1))[1] == -s
+        @test @ballocated(gradient(a -> value(sum(sincos(a))), $a)) == 0
 
-    #     # function func1(a, b, c, t)
-    #     #     qt = time(t)
-    #     #     qc = dimensionless(c)
-    #     #     qb = frequency(b)
-    #     #     qa = GQ(a, -2)
-    #     #     return value(qa * qt * qt + qb * qt + qc)
-    #     # end
+        function func1(a, b, c, t)
+            qt = time(t)
+            qc = dimensionless(c)
+            qb = frequency(b)
+            qa = GQ{-2}(a)
+            return value(qa * qt * qt + qb * qt + qc)
+        end
 
-    #     # function func1_grad_anl(a, b, c, t)
-    #     #     return t * t, t, 1.0, 2 * a * t + b
-    #     # end
+        function func1_grad_anl(a, b, c, t)
+            return t * t, t, 1.0, 2 * a * t + b
+        end
 
-    #     # @test collect(func1_grad_anl(1.0, 2.0, 3.0, -2.0)) ≈
-    #     #       collect(gradient(func1, 1.0, 2.0, 3.0, -2.0))
+        @test collect(func1_grad_anl(1.0, 2.0, 3.0, -2.0)) ≈
+              collect(gradient(func1, 1.0, 2.0, 3.0, -2.0))
 
-    #     # function func2(a, w, t)
-    #     #     qa = dimensionless(a)
-    #     #     qw = frequency(w)
-    #     #     qt = time(t)
-    #     #     return [value(qa * sin(qw * qt)), value(qa * cos(qw * qt))]
-    #     # end
+        function func2(a, w, t)
+            qa = dimensionless(a)
+            qw = frequency(w)
+            qt = time(t)
+            return [value(qa * sin(qw * qt)), value(qa * cos(qw * qt))]
+        end
 
-    #     # function func2_jac_anl(a, w, t)
-    #     #     return (
-    #     #         [sin(w * t), cos(w * t)],
-    #     #         [a * t * cos(w * t), -a * t * sin(w * t)],
-    #     #         [a * w * cos(w * t), -a * w * sin(w * t)],
-    #     #     )
-    #     # end
+        function func2_jac_anl(a, w, t)
+            return (
+                [sin(w * t), cos(w * t)],
+                [a * t * cos(w * t), -a * t * sin(w * t)],
+                [a * w * cos(w * t), -a * w * sin(w * t)],
+            )
+        end
 
-    #     # jac1 = jacobian(func2, Float128(1.2), Float128(0.5), Float128(2.3))
-    #     # jac2 = func2_jac_anl(Float128(1.2), Float128(0.5), Float128(2.3))
-    #     # @test all([j1 ≈ j2 for (j1, j2) in zip(jac1, jac2)])
+        jac1 = jacobian(func2, Float128(1.2), Float128(0.5), Float128(2.3))
+        jac2 = func2_jac_anl(Float128(1.2), Float128(0.5), Float128(2.3))
+        @test all([j1 ≈ j2 for (j1, j2) in zip(jac1, jac2)])
     end
 end
