@@ -5,46 +5,47 @@ export GQ
 
 Struct representing a geometrized quantity.
 """
-struct GQ{X<:AbstractFloat}
+struct GQ{d,X<:AbstractFloat}
     x::X
-    d::Int
+
+    function GQ{d,X}(x::X) where {d,X<:AbstractFloat}
+        @assert d isa Int
+        return new(x)
+    end
 end
 
-GQ{X}(a::GQ{Y}) where {X,Y} = GQ(X(a.x), a.d)
+GQ{d}(x::X) where {d,X<:AbstractFloat} = GQ{d,X}(x)
+GQ{X}(a::GQ{d,Y}) where {d,X,Y} = GQ{d}(X(a.x))
 
-# Util functions
-export dimension_mismatch, dimensionless_forward
-
-"""
-    dimension_mismatch(obj)
-
-Utility function to throw a DomainError upon encountering a dimensionally mismatched expression.
-"""
-dimension_mismatch(obj) = throw(DomainError(obj, "Dimension mismatch!"))
-
-# Unit forwarding
-import Base.zero, Base.oneunit, Base.convert
-export unit, quantity_like, value, udim
-
-oneunit(a::GQ) = GQ(oneunit(a.x), a.d)
-unit(a::GQ) = oneunit(a)
-zero(a::GQ) = GQ(zero(a.x), a.d)
-quantity_like(a::GQ, y) = GQ(oftype(a.x, y), a.d)
-dimensionless_forward(a::GQ, f) = (a.d == 0) ? GQ(f(a.x), 0) : dimension_mismatch((a, f))
-
-convert(::Type{X}, a::GQ{X}) where {X} = a.x
+# Extract value and dimensions
+export value, udim
 
 value(a::GQ) = a.x
-udim(a::GQ) = a.d
+udim(::GQ{d,X}) where {d,X} = d
+
+# Unit forwarding and conversion
+import Base.zero, Base.oneunit, Base.oftype, Base.convert 
+
+oneunit(a::GQ{d,X}) where {d,X} = GQ{d}(oneunit(a.x))
+zero(a::GQ{d,X}) where {d,X} = GQ{d}(zero(a.x))
+oftype(a::GQ{d,X}, y) where {d,X} = GQ{d}(oftype(a.x, y))
+convert(::Type{X}, a::GQ{d,X}) where {d,X} = a.x
+
+# == Iteration ==================
+import Base.iterate, Base.length
+
+iterate(a::GQ) = (a, nothing)
+iterate(::GQ, ::Any) = nothing
+length(::GQ) = 1
 
 # == Commonly used quantities ===
 import Base.time
 export dimensionless, speed, distance, mass, frequency, acceleration
 
-dimensionless(x) = GQ(x, 0)
+dimensionless(x) = GQ{0}(x)
 speed(x) = dimensionless(x)
-time(x) = GQ(x, 1)
+time(x) = GQ{1}(x)
 distance(x) = time(x)
 mass(x) = time(x)
-frequency(x) = GQ(x, -1)
+frequency(x) = GQ{-1}(x)
 acceleration(x) = frequency(x)

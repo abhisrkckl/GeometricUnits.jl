@@ -1,24 +1,25 @@
 # == Addition, subtraction, and negation ===
 import Base.+, Base.-
 
-a::GQ + b::GQ = (a.d == b.d) ? GQ(a.x + b.x, a.d) : dimension_mismatch((a, b))
-a::GQ + y::Real = a + dimensionless(float(y))
-x::Real + b::GQ = b + x
+(a::GQ{d,X} + b::GQ{d,Y}) where {d,X,Y} = GQ{d}(a.x + b.x)
+(a::GQ{0,X} + y::Real) where {X} = a + dimensionless(float(y))
+(x::Real + b::GQ) = (b + x)
 
-a::GQ - b::GQ = (a.d == b.d) ? GQ(a.x - b.x, a.d) : dimension_mismatch((a, b))
-a::GQ - y::Real = a - dimensionless(float(y))
+(a::GQ{d,X} - b::GQ{d,Y}) where {d,X,Y} = GQ{d}(a.x - b.x)
+(a::GQ{0,X} - y::Real) where {X} = a - dimensionless(float(y))
 x::Real - b::GQ = -(b - x)
 
--a::GQ = GQ(-a.x, a.d)
+(-a::GQ{d,X}) where {d,X} = GQ{d}(-a.x)
++a::GQ = a
 
 # == Multiplication and division ===
 import Base.*, Base./
 
-a::GQ * b::GQ = GQ(a.x * b.x, a.d + b.d)
+(a::GQ{d1,X} * b::GQ{d2,Y}) where {d1,d2,X,Y} = GQ{d1+d2}(a.x * b.x)
 a::GQ * y::Real = a * dimensionless(float(y))
 x::Real * b::GQ = b * x
 
-a::GQ / b::GQ = GQ(a.x / b.x, a.d - b.d)
+(a::GQ{d1,X} / b::GQ{d2,Y}) where {d1,d2,X,Y} = GQ{d1-d2}(a.x / b.x)
 a::GQ / y::Real = a / dimensionless(float(y))
 x::Real / b::GQ = dimensionless(float(x)) / b
 
@@ -26,18 +27,17 @@ x::Real / b::GQ = dimensionless(float(x)) / b
 import Base.^, Base.inv, Base.sqrt, Base.cbrt
 export root
 
-a::GQ^b::GQ = (a.d == 0 && b.d == 0) ? GQ(a.x^b.x, 0) : dimension_mismatch((a, b))
-x::Real^b::GQ = dimensionless(float(x))^b
-a::GQ^y::Real = a^dimensionless(float(y))
-a::GQ^n::Integer = GQ(a.x^n, a.d * signed(n))
-a::GQ^q::Rational =
-    ((a.d * q).den == 1) ? GQ(a.x^q, (a.d * q).num) : dimension_mismatch((a, q))
+(a::GQ{0,X}^b::GQ{0,Y}) where {X,Y} = dimensionless(a.x^b.x)
+(x::Real^b::GQ{0,Y}) where {Y} = dimensionless(float(x))^b
+(a::GQ{0,X}^y::Real) where {X} = a^dimensionless(float(y))
+(a::GQ{d,X}^vq::Val{q}) where {d,q,X} = GQ{Int(q*d)}(a.x^q)
 
 inv(a::GQ) = 1 / a
 
-sqrt(a::GQ) = (a.d % 2 == 0) ? GQ(sqrt(a.x), Int(a.d // 2)) : dimension_mismatch(a)
-cbrt(a::GQ) = (a.d % 3 == 0) ? GQ(cbrt(a.x), Int(a.d // 3)) : dimension_mismatch(a)
-root(a::GQ, n::Union{Integer,Rational}) = a^(1 // n)
+sqrt(a::GQ{d,X}) where {d,X} = GQ{Int(d//2)}(sqrt(a.x))
+cbrt(a::GQ{d,X}) where {d,X} = GQ{Int(d//3)}(cbrt(a.x))
+root(a::GQ{0,X}, q::Real) where {X} = a^(1 // q)
+root(a::GQ, ::Val{q}) where {q} = a^Val(1 // q)
 
 # == Absolute value ===
 import Base.abs
