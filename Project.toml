@@ -13,9 +13,8 @@ BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 ChainRulesTestUtils = "cdddcdb0-9152-4a09-a978-84456f9df70a"
 JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
 Quadmath = "be4d8f0f-7fa4-5f49-b795-2f01399ab2dd"
-StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TestExtras = "5ed8adda-3752-4e41-b88a-e8b09835ee3a"
 
 [targets]
-test = ["Test", "TestExtras", "JuliaFormatter", "Quadmath", "StaticArrays", "BenchmarkTools", "ChainRulesTestUtils"]
+test = ["Test", "TestExtras", "JuliaFormatter", "Quadmath", "BenchmarkTools", "ChainRulesTestUtils"]

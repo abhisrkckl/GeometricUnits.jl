@@ -1,7 +1,6 @@
 using GeometricUnits
 using LinearAlgebra
 using Quadmath
-using StaticArrays
 using Test
 using TestExtras
 using BenchmarkTools
@@ -317,8 +316,8 @@ using Zygote
 
             @test (@ballocated dot($sx, $sy)) == 0
 
-            x = SA[1.1, 0.85, -1.2]
-            y = SA[1.3, -0.87, 1.3]
+            x = (1.1, 0.85, -1.2)
+            y = (1.3, -0.87, 1.3)
 
             sx = distance.(x)
             sy = distance.(y)
