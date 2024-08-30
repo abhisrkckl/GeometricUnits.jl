@@ -217,16 +217,16 @@ using Zygote
         @test ceil(frequency(1.1)) == frequency(2.0)
     end
 
-    # @testset "exp and log" begin
-    #     @test exp(log(d1)) ≈ d1
-    #     @test 10^(log10(d1)) ≈ d1
-    #     @test 2^(log2(d1)) ≈ d1
+    @testset "exp and log" begin
+        @test exp(log(d1)) ≈ d1
+        @test 10^(log10(d1)) ≈ d1
+        @test 2^(log2(d1)) ≈ d1
 
-    #     @constinferred exp(d1)
-    #     @constinferred log(d1)
-    #     @constinferred log10(d1)
-    #     @constinferred log2(d1)
-    # end
+        @constinferred exp(d1)
+        @constinferred log(d1)
+        @constinferred log10(d1)
+        @constinferred log2(d1)
+    end
 
     # @testset "trigonometric functions" begin
     #     @test sin(d1) ≈ 1 / csc(d1)
