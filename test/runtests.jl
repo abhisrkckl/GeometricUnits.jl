@@ -1,7 +1,6 @@
 using GeometricUnits
 using LinearAlgebra
 using Quadmath
-using StaticArrays
 using Test
 using TestExtras
 using BenchmarkTools
@@ -9,7 +8,7 @@ using Zygote
 
 @testset verbose = true begin
     t1 = time(2.9)
-    t2 = quantity_like(t1, 1.2)
+    t2 = oftype(t1, 1.2)
 
     f1 = frequency(0.2)
 
@@ -19,19 +18,20 @@ using Zygote
     @testset "constructor" begin
         t11 = GQ{Float32}(t1)
         @test isa(t11.x, Float32)
-        @test t11.x == Float32(t1.x)
-        @test t11.d == t1.d
+        @test value(t11) == Float32(value(t1))
+        @test udim(t11) == udim(t1)
         @test length(t11) == 1
+        @test_throws AssertionError GQ{1.1}(1.2)
     end
 
     @testset "unit and zero" begin
-        @test value(unit(t1)) == 1 && udim(unit(t1)) == udim(t1)
+        @test value(oneunit(t1)) == 1 && udim(oneunit(t1)) == udim(t1)
         @test value(zero(t1)) == 0 && udim(zero(t1)) == udim(t1)
 
-        @test value(unit(f1)) == 1 && udim(unit(f1)) == udim(f1)
+        @test value(oneunit(f1)) == 1 && udim(oneunit(f1)) == udim(f1)
         @test value(zero(f1)) == 0 && udim(zero(f1)) == udim(f1)
 
-        @constinferred unit(t1)
+        @constinferred oneunit(t1)
         @constinferred value(t1)
         @constinferred udim(t1)
         @constinferred zero(t1)
@@ -54,13 +54,13 @@ using Zygote
     @testset "comparison" begin
         @test t1 == t1
         @test !(t1 != t1)
-        @test_throws DomainError t1 == f1
+        @test t1 != f1
 
         @constinferred (t1 == t1)
-        @constinferred (!(t1 != t1))
+        @constinferred (t1 != t1)
 
         @test t1 ≈ t1
-        @test_throws DomainError t1 ≈ f1
+        @test_throws MethodError t1 ≈ f1
 
         @constinferred (t1 ≈ t1)
 
@@ -92,15 +92,15 @@ using Zygote
         @constinferred (0 < d1)
         @constinferred (0 >= d1)
 
-        @test_throws DomainError d1 > t1
-        @test_throws DomainError d1 >= t1
-        @test_throws DomainError d1 <= t1
-        @test_throws DomainError d1 < t1
+        @test_throws MethodError d1 > t1
+        @test_throws MethodError d1 >= t1
+        @test_throws MethodError d1 <= t1
+        @test_throws MethodError d1 < t1
 
-        @test_throws DomainError 0 > t1
-        @test_throws DomainError 0 >= t1
-        @test_throws DomainError 0 <= t1
-        @test_throws DomainError 0 < t1
+        @test_throws MethodError 0 > t1
+        @test_throws MethodError 0 >= t1
+        @test_throws MethodError 0 <= t1
+        @test_throws MethodError 0 < t1
 
         @test isfinite(t1)
         @test !isnan(t1)
@@ -113,10 +113,10 @@ using Zygote
 
     @testset "addition and subtraction" begin
         @test (t1 + t2).x == t1.x + t2.x
-        @test_throws DomainError t1 + f1
+        @test_throws MethodError t1 + f1
 
         @test (t1 - t2).x == t1.x - t2.x
-        @test_throws DomainError t1 - f1
+        @test_throws MethodError t1 - f1
 
         @test (t1 - t2).x == (t1 + (-t2)).x
         @test (t1 + t2).x == (t1 - (-t2)).x
@@ -125,13 +125,13 @@ using Zygote
         @test t1 - t2 == -(t2 - t1)
         @test t1 - t1 == zero(t1)
 
-        @test 1 + d1 == d1 + 1
+        @test 1 + d1 == +(d1 + 1)
         @test 1 - d1 == -(d1 - 1)
 
-        @test_throws DomainError 1 + t1
-        @test_throws DomainError 1 - t1
-        @test_throws DomainError t1 + 1
-        @test_throws DomainError t1 - 1
+        @test_throws MethodError 1 + t1
+        @test_throws MethodError 1 - t1
+        @test_throws MethodError t1 + 1
+        @test_throws MethodError t1 - 1
 
         @constinferred (t1 + t2)
         @constinferred (t1 - t2)
@@ -144,7 +144,7 @@ using Zygote
 
     @testset "multiplication and division" begin
         @test (t1 * f1).x == t1.x * f1.x
-        @test (t1 * f1).d == t1.d + f1.d
+        @test udim(t1 * f1) == udim(t1) + udim(f1)
 
         @test t1 * d1 == d1 * t1
         @test t1 * d1 == d1.x * t1
@@ -154,7 +154,7 @@ using Zygote
         @test t1 + 3.2 * t1 == 4.2 * t1
 
         @test (t1 / f1).x == t1.x / f1.x
-        @test (t1 / f1).d == t1.d - f1.d
+        @test udim(t1 / f1) == udim(t1) - udim(f1)
 
         @test t1 / f1 ≈ t1 * (1 / f1)
         @test t1 / t1 == 1
@@ -170,34 +170,34 @@ using Zygote
         @constinferred (f1 * 1.3)
         @constinferred (1.2 / f1)
         @constinferred (f1 / 1.3)
-        @constinferred (d1 .* (t1, f1))
+        @constinferred map(*, Ref(d1), (t1, f1))
     end
 
     @testset "power and root" begin
-        @test t1 * t1 == t1^2
-        @test 1 / t1 == t1^(-1)
+        @test t1 * t1 == t1^Val(2)
+        @test 1 / t1 == t1^Val(-1)
 
-        @test sqrt(t1^2) ≈ t1
-        @test cbrt(t1^3) ≈ t1
-        @test root(t1^5, 5) ≈ t1
+        @test sqrt(t1^Val(2)) ≈ t1
+        @test cbrt(t1^Val(3)) ≈ t1
+        @test root(t1^Val(5), Val(5)) ≈ t1
 
-        @test sqrt(d1) ≈ d1^0.5
-        @test sqrt(d1) ≈ d1^(1 // 2)
-        @test d1^2 ≈ root(d1, 1 // 2)
+        @test sqrt(d1) ≈ d1^Val(0.5)
+        @test sqrt(d1) ≈ d1^Val(1 // 2)
+        @test d1^Val(2) ≈ root(d1, Val(1 // 2))
 
         @test 1.0^d1 ≈ 1
         @test d1^0 ≈ 1
 
         @test d1^d1 == d1.x^d1.x
 
-        @test_throws DomainError t1^(1 // 2)
-        @test_throws DomainError t1^6.3
-        @test_throws DomainError 0.5^t1
-        @test_throws DomainError sqrt(t1)
-        @test_throws DomainError cbrt(t1)
-        @test_throws DomainError root(t1, 4)
+        @test_throws MethodError t1^(1 // 2)
+        @test_throws MethodError t1^6.3
+        @test_throws MethodError 0.5^t1
+        @test_throws InexactError sqrt(t1)
+        @test_throws InexactError cbrt(t1)
+        @test_throws MethodError root(t1, 4)
 
-        @constinferred (t1^2)
+        @constinferred (t1^Val(2))
         @constinferred (2^d1)
         @constinferred sqrt(d1)
         @constinferred cbrt(d1)
@@ -266,28 +266,32 @@ using Zygote
         c1 = speed(1.0)
         c2 = acceleration(1.2)
         c3 = acceleration(0.5) / time(2.0)
-        c4 = acceleration(1.2) / time(2.0)^2
-        cs = SA[c1, c2, c3, c4]
+        c4 = acceleration(1.2) / time(2.0)^Val(2)
+        cs = (c1, c2, c3, c4)
 
         t1 = time(1.0)
 
         dt = t1 - t0
 
+        @test taylor_horner(dt, cs) ≈
+              (c1 + c2 * dt + (1 / 2) * c3 * dt * dt + (1 / 6) * c4 * dt * dt * dt)
+
+        @test (@ballocated taylor_horner($dt, $cs)) == 0
+
         @test taylor_horner_integral(dt, cs, c0) ≈ (
-            c0 + c1 * dt + (1 / 2) * c2 * dt^2 + (1 / 6) * c3 * dt^3 + (1 / 24) * c4 * dt^4
+            c0 +
+            c1 * dt +
+            (1 / 2) * c2 * dt^Val(2) +
+            (1 / 6) * c3 * dt^Val(3) +
+            (1 / 24) * c4 * dt^Val(4)
         )
 
         @test (@ballocated taylor_horner_integral($dt, $cs, $c0)) == 0
 
-        @test taylor_horner(dt, cs) ≈
-              (c1 + c2 * dt + (1 / 2) * c3 * dt^2 + (1 / 6) * c4 * dt^3)
-
-        @test (@ballocated taylor_horner($dt, $cs)) == 0
-
         d0 = dimensionless(2.3)
 
-        @test_throws DomainError taylor_horner_integral(dt, cs, d0)
-        @test_throws DomainError taylor_horner(d0, cs)
+        @test_throws MethodError taylor_horner_integral(dt, cs, d0)
+        @test_throws AssertionError taylor_horner(d0, cs)
     end
 
     @testset "linear algebra" begin
@@ -308,12 +312,12 @@ using Zygote
             @test x_y ≈ sxTsy.x
             @test x_sy ≈ sx_y
             @test x_sy.x ≈ x_y
-            @test sx_sy.d == sx[1].d + sy[1].d
+            @test udim(sx_sy) == udim(sx[1]) + udim(sy[1])
 
             @test (@ballocated dot($sx, $sy)) == 0
 
-            x = SA[1.1, 0.85, -1.2]
-            y = SA[1.3, -0.87, 1.3]
+            x = (1.1, 0.85, -1.2)
+            y = (1.3, -0.87, 1.3)
 
             sx = distance.(x)
             sy = distance.(y)
@@ -322,7 +326,7 @@ using Zygote
             sx_sy = dot(sx, sy)
 
             @test x_y ≈ sx_sy.x
-            @test sx_sy.d == sx[1].d + sy[1].d
+            @test udim(sx_sy) == udim(sx[1]) + udim(sy[1])
 
             @constinferred dot(sx, sy)
 
@@ -350,13 +354,13 @@ using Zygote
             gradient($(a -> value(zero(a))), $d1) == ($dimensionless(0.0),)
         ) == 0
 
-        @test gradient((t, x) -> value(quantity_like(t, x)), t1, x) == (zero(1 / t1), 1)
-        @test @ballocated(gradient((t, x) -> value(quantity_like(t, x)), $t1, $x)) == 0
+        @test gradient((t, x) -> value(oftype(t, x)), t1, x) == (zero(1 / t1), 1)
+        @test @ballocated(gradient((t, x) -> value(oftype(t, x)), $t1, $x)) == 0
 
         @test gradient(d -> value(d * d - 2 * d + 1), d1) == (2 * d1 - 2,)
         @test @ballocated(gradient(d -> value(d * d - 2 * d + 1), $d1)) == 0
 
-        @test gradient(d -> value(-d + exp(d)), d1) == (-unit(d1) + exp(d1),)
+        @test gradient(d -> value(-d + exp(d)), d1) == (-oneunit(d1) + exp(d1),)
         @test @ballocated(gradient(d -> value(-d + exp(d)), $d1)) == 0
 
         @test gradient(d -> value((d + 1) / d), d1) == gradient(d -> value(1 + 1 / d), d1)
@@ -422,7 +426,7 @@ using Zygote
 
         @test gradient(a -> value(atan(sin(a) / cos(a))), d1)[1] == oneunit(d1)
         @test gradient(a -> value(atan(sin(a), cos(a))), d1)[1] == oneunit(d1)
-        @test_broken @ballocated(gradient(a -> value(atan(sin(a) / cos(a))), $d1)) == 0
+        @test @ballocated(gradient(a -> value(atan(sin(a) / cos(a))), $d1)) == 0
         @test @ballocated(gradient(a -> value(atan(sin(a), cos(a))), $d1)) == 0
 
         @test gradient(a -> value(asin(sin(a))), d3)[1].x ≈ 1
@@ -438,38 +442,38 @@ using Zygote
         @test _back((0, 1))[1] == -s
         @test @ballocated(gradient(a -> value(sum(sincos(a))), $a)) == 0
 
-        # function func1(a, b, c, t)
-        #     qt = time(t)
-        #     qc = dimensionless(c)
-        #     qb = frequency(b)
-        #     qa = GQ(a, -2)
-        #     return value(qa * qt * qt + qb * qt + qc)
-        # end
+        function func1(a, b, c, t)
+            qt = time(t)
+            qc = dimensionless(c)
+            qb = frequency(b)
+            qa = GQ{-2}(a)
+            return value(qa * qt * qt + qb * qt + qc)
+        end
 
-        # function func1_grad_anl(a, b, c, t)
-        #     return t * t, t, 1.0, 2 * a * t + b
-        # end
+        function func1_grad_anl(a, b, c, t)
+            return t * t, t, 1.0, 2 * a * t + b
+        end
 
-        # @test collect(func1_grad_anl(1.0, 2.0, 3.0, -2.0)) ≈
-        #       collect(gradient(func1, 1.0, 2.0, 3.0, -2.0))
+        @test collect(func1_grad_anl(1.0, 2.0, 3.0, -2.0)) ≈
+              collect(gradient(func1, 1.0, 2.0, 3.0, -2.0))
 
-        # function func2(a, w, t)
-        #     qa = dimensionless(a)
-        #     qw = frequency(w)
-        #     qt = time(t)
-        #     return [value(qa * sin(qw * qt)), value(qa * cos(qw * qt))]
-        # end
+        function func2(a, w, t)
+            qa = dimensionless(a)
+            qw = frequency(w)
+            qt = time(t)
+            return [value(qa * sin(qw * qt)), value(qa * cos(qw * qt))]
+        end
 
-        # function func2_jac_anl(a, w, t)
-        #     return (
-        #         [sin(w * t), cos(w * t)],
-        #         [a * t * cos(w * t), -a * t * sin(w * t)],
-        #         [a * w * cos(w * t), -a * w * sin(w * t)],
-        #     )
-        # end
+        function func2_jac_anl(a, w, t)
+            return (
+                [sin(w * t), cos(w * t)],
+                [a * t * cos(w * t), -a * t * sin(w * t)],
+                [a * w * cos(w * t), -a * w * sin(w * t)],
+            )
+        end
 
-        # jac1 = jacobian(func2, Float128(1.2), Float128(0.5), Float128(2.3))
-        # jac2 = func2_jac_anl(Float128(1.2), Float128(0.5), Float128(2.3))
-        # @test all([j1 ≈ j2 for (j1, j2) in zip(jac1, jac2)])
+        jac1 = jacobian(func2, Float128(1.2), Float128(0.5), Float128(2.3))
+        jac2 = func2_jac_anl(Float128(1.2), Float128(0.5), Float128(2.3))
+        @test all([j1 ≈ j2 for (j1, j2) in zip(jac1, jac2)])
     end
 end
