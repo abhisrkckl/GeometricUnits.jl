@@ -336,58 +336,58 @@ using Zygote
         end
     end
 
-    # @testset "derivatives" begin
-    #     d1 = dimensionless(1.2)
-    #     d2 = dimensionless(2.1)
-    #     d3 = dimensionless(0.5)
-    #     t1 = time(1.3)
-    #     t2 = time(2.4)
-    #     x = 0.9
+    @testset "derivatives" begin
+        d1 = dimensionless(1.2)
+        d2 = dimensionless(2.1)
+        d3 = dimensionless(0.5)
+        t1 = time(1.3)
+        t2 = time(2.4)
+        x = 0.9
 
-    #     @test gradient(a -> value(oneunit(a)), d1) == (dimensionless(0.0),)
-    #     @test @ballocated(
-    #         gradient($(a -> value(oneunit(a))), $d1) == ($dimensionless(0.0),)
-    #     ) == 0
+        @test gradient(a -> value(oneunit(a)), d1) == (dimensionless(0.0),)
+        @test @ballocated(
+            gradient($(a -> value(oneunit(a))), $d1) == ($dimensionless(0.0),)
+        ) == 0
 
-    #     @test gradient(a -> value(zero(a)), d1) == (dimensionless(0.0),)
-    #     @test @ballocated(
-    #         gradient($(a -> value(zero(a))), $d1) == ($dimensionless(0.0),)
-    #     ) == 0
+        @test gradient(a -> value(zero(a)), d1) == (dimensionless(0.0),)
+        @test @ballocated(
+            gradient($(a -> value(zero(a))), $d1) == ($dimensionless(0.0),)
+        ) == 0
 
-    #     @test gradient((t, x) -> value(quantity_like(t, x)), t1, x) == (zero(1 / t1), 1)
-    #     @test @ballocated(gradient((t, x) -> value(quantity_like(t, x)), $t1, $x)) == 0
+        @test gradient((t, x) -> value(oftype(t, x)), t1, x) == (zero(1 / t1), 1)
+        @test @ballocated(gradient((t, x) -> value(oftype(t, x)), $t1, $x)) == 0
 
-    #     @test gradient(d -> value(d * d - 2 * d + 1), d1) == (2 * d1 - 2,)
-    #     @test @ballocated(gradient(d -> value(d * d - 2 * d + 1), $d1)) == 0
+        @test gradient(d -> value(d * d - 2 * d + 1), d1) == (2 * d1 - 2,)
+        @test @ballocated(gradient(d -> value(d * d - 2 * d + 1), $d1)) == 0
 
-    #     @test gradient(d -> value(-d + exp(d)), d1) == (-unit(d1) + exp(d1),)
-    #     @test @ballocated(gradient(d -> value(-d + exp(d)), $d1)) == 0
+        @test gradient(d -> value(-d + exp(d)), d1) == (-oneunit(d1) + exp(d1),)
+        @test @ballocated(gradient(d -> value(-d + exp(d)), $d1)) == 0
 
-    #     @test gradient(d -> value((d + 1) / d), d1) == gradient(d -> value(1 + 1 / d), d1)
-    #     @test gradient(d -> value((d + 1) / d), d1)[1] ≈ -1 / d1^2
-    #     @test @ballocated(gradient(d -> value((d + 1) / d), $d1)) == 0
-    #     @test @ballocated(gradient(d -> value(1 + 1 / d), $d1)) == 0
+        @test gradient(d -> value((d + 1) / d), d1) == gradient(d -> value(1 + 1 / d), d1)
+        @test gradient(d -> value((d + 1) / d), d1)[1] ≈ -1 / d1^2
+        @test @ballocated(gradient(d -> value((d + 1) / d), $d1)) == 0
+        @test @ballocated(gradient(d -> value(1 + 1 / d), $d1)) == 0
 
-    #     @test gradient((a, b) -> value(a^b), d1, d2) ==
-    #           gradient((a, b) -> value(exp(b * log(a))), d1, d2)
-    #     @test @ballocated(gradient((a, b) -> value(a^b), $d1, $d2)) == 0
-    #     @test @ballocated(gradient((a, b) -> value(exp(b * log(a))), $d1, $d2)) == 0
+        @test gradient((a, b) -> value(a^b), d1, d2) ==
+              gradient((a, b) -> value(exp(b * log(a))), d1, d2)
+        @test @ballocated(gradient((a, b) -> value(a^b), $d1, $d2)) == 0
+        @test @ballocated(gradient((a, b) -> value(exp(b * log(a))), $d1, $d2)) == 0
 
-    #     @test gradient(a -> value(a^2.0), d1) == gradient(a -> value(a * a), d1)
-    #     @test @ballocated(gradient(a -> value(a^2.0), $d1)) == 0
+        @test gradient(a -> value(a^2.0), d1) == gradient(a -> value(a * a), d1)
+        @test @ballocated(gradient(a -> value(a^2.0), $d1)) == 0
 
-    #     @test gradient(a -> value(a^2), d1) == gradient(a -> value(a * a), d1)
-    #     @test_broken @ballocated(gradient(a -> value(a^2), $d1)) == 0
+        @test gradient(a -> value(a^2), d1) == gradient(a -> value(a * a), d1)
+        @test_broken @ballocated(gradient(a -> value(a^2), $d1)) == 0
 
-    #     @test gradient(a -> value(a^unsigned(2)), d1) == gradient(a -> value(a * a), d1)
-    #     @test_broken @ballocated(gradient(a -> value(a^unsigned(2)), $d1)) == 0
+        @test gradient(a -> value(a^unsigned(2)), d1) == gradient(a -> value(a * a), d1)
+        @test_broken @ballocated(gradient(a -> value(a^unsigned(2)), $d1)) == 0
 
-    #     @test gradient(a -> value(a^(3 // 1)), d1) == gradient(a -> value(a * a * a), d1)
-    #     @test @ballocated(gradient(a -> value(a^(3 // 1)), $d1)) == 0
+        @test gradient(a -> value(a^(3 // 1)), d1) == gradient(a -> value(a * a * a), d1)
+        @test @ballocated(gradient(a -> value(a^(3 // 1)), $d1)) == 0
 
-    #     @test gradient(a -> value(sqrt(a * a * a)), d1) ==
-    #           gradient(a -> value(a^(3 // 2)), d1)
-    #     @test @ballocated(gradient(a -> value(sqrt(a * a * a)), $d1)) == 0
+        @test gradient(a -> value(sqrt(a * a * a)), d1) ==
+              gradient(a -> value(a^(3 // 2)), d1)
+        @test @ballocated(gradient(a -> value(sqrt(a * a * a)), $d1)) == 0
 
     #     @test gradient(a -> value(cbrt(sqrt(a))), d1) ==
     #           gradient(a -> value(root(a, 6)), d1)
@@ -475,5 +475,5 @@ using Zygote
     #     # jac1 = jacobian(func2, Float128(1.2), Float128(0.5), Float128(2.3))
     #     # jac2 = func2_jac_anl(Float128(1.2), Float128(0.5), Float128(2.3))
     #     # @test all([j1 ≈ j2 for (j1, j2) in zip(jac1, jac2)])
-    # end
+    end
 end

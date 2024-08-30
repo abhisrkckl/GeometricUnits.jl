@@ -5,13 +5,12 @@ import Zygote: _gradcopy!
 dimensionless_zero(a::GQ) = dimensionless(zero(value(a)))
 dimensionless_unit(a::GQ) = dimensionless(oneunit(value(a)))
 
-function ChainRulesCore.rrule(::Type{GQ{X}}, x::X, d::Int) where {X<:AbstractFloat}
-    y = GQ(x, d)
+function ChainRulesCore.rrule(::Type{GQ{d,X}}, x::X) where {d,X<:AbstractFloat}
+    y = GQ{d}(x)
     function _pullback(ybar)
         fbar = NoTangent()
         xbar = oneunit(y) * ybar
-        dbar = NoTangent()
-        return fbar, xbar, dbar
+        return fbar, xbar
     end
     return y, _pullback
 end
@@ -40,12 +39,12 @@ function ChainRulesCore.rrule(::typeof(zero), a::GQ)
     return y, _pullback
 end
 
-function ChainRulesCore.rrule(::typeof(quantity_like), a::GQ, x)
-    y = quantity_like(a, x)
+function ChainRulesCore.rrule(::typeof(oftype), a::GQ, x)
+    y = oftype(a, x)
     function _pullback(ybar)
         fbar = NoTangent()
         abar = dimensionless_zero(a) * ybar
-        xbar = GQ(oneunit(value(y)), a.d) * ybar
+        xbar = oftype(a, oneunit(value(y))) * ybar
         return fbar, abar, xbar
     end
     return y, _pullback
