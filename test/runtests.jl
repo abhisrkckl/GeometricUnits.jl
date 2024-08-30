@@ -275,12 +275,16 @@ using Zygote
         dt = t1 - t0
 
         @test taylor_horner(dt, cs) ≈
-              (c1 + c2 * dt + (1 / 2) * c3 * dt*dt + (1 / 6) * c4 * dt*dt*dt)
+              (c1 + c2 * dt + (1 / 2) * c3 * dt * dt + (1 / 6) * c4 * dt * dt * dt)
 
         @test (@ballocated taylor_horner($dt, $cs)) == 0
 
         @test taylor_horner_integral(dt, cs, c0) ≈ (
-            c0 + c1 * dt + (1 / 2) * c2 * dt^Val(2) + (1 / 6) * c3 * dt^Val(3) + (1 / 24) * c4 * dt^Val(4)
+            c0 +
+            c1 * dt +
+            (1 / 2) * c2 * dt^Val(2) +
+            (1 / 6) * c3 * dt^Val(3) +
+            (1 / 24) * c4 * dt^Val(4)
         )
 
         @test (@ballocated taylor_horner_integral($dt, $cs, $c0)) == 0
@@ -291,47 +295,47 @@ using Zygote
         @test_throws AssertionError taylor_horner(d0, cs)
     end
 
-    # @testset "linear algebra" begin
-    #     @testset "dot" begin
-    #         x = [1.1, 0.85, -1.2]
-    #         y = [1.3, -0.87, 1.3]
+    @testset "linear algebra" begin
+        @testset "dot" begin
+            x = [1.1, 0.85, -1.2]
+            y = [1.3, -0.87, 1.3]
 
-    #         sx = distance.(x)
-    #         sy = distance.(y)
+            sx = distance.(x)
+            sy = distance.(y)
 
-    #         x_y = dot(x, y)
-    #         sx_sy = dot(sx, sy)
-    #         x_sy = dot(x, sy)
-    #         sx_y = dot(sx, y)
-    #         sxTsy = transpose(sx) * sy
+            x_y = dot(x, y)
+            sx_sy = dot(sx, sy)
+            x_sy = dot(x, sy)
+            sx_y = dot(sx, y)
+            sxTsy = transpose(sx) * sy
 
-    #         @test x_y ≈ sx_sy.x
-    #         @test x_y ≈ sxTsy.x
-    #         @test x_sy ≈ sx_y
-    #         @test x_sy.x ≈ x_y
-    #         @test sx_sy.d == sx[1].d + sy[1].d
+            @test x_y ≈ sx_sy.x
+            @test x_y ≈ sxTsy.x
+            @test x_sy ≈ sx_y
+            @test x_sy.x ≈ x_y
+            @test udim(sx_sy) == udim(sx[1]) + udim(sy[1])
 
-    #         @test (@ballocated dot($sx, $sy)) == 0
+            @test (@ballocated dot($sx, $sy)) == 0
 
-    #         x = SA[1.1, 0.85, -1.2]
-    #         y = SA[1.3, -0.87, 1.3]
+            x = SA[1.1, 0.85, -1.2]
+            y = SA[1.3, -0.87, 1.3]
 
-    #         sx = distance.(x)
-    #         sy = distance.(y)
+            sx = distance.(x)
+            sy = distance.(y)
 
-    #         x_y = dot(x, y)
-    #         sx_sy = dot(sx, sy)
+            x_y = dot(x, y)
+            sx_sy = dot(sx, sy)
 
-    #         @test x_y ≈ sx_sy.x
-    #         @test sx_sy.d == sx[1].d + sy[1].d
+            @test x_y ≈ sx_sy.x
+            @test udim(sx_sy) == udim(sx[1]) + udim(sy[1])
 
-    #         @constinferred dot(sx, sy)
+            @constinferred dot(sx, sy)
 
-    #         @test @ballocated(dot($sx, $sy)) == 0
+            @test @ballocated(dot($sx, $sy)) == 0
 
-    #         @test transpose(x[1]) == x[1]
-    #     end
-    # end
+            @test transpose(x[1]) == x[1]
+        end
+    end
 
     # @testset "derivatives" begin
     #     d1 = dimensionless(1.2)

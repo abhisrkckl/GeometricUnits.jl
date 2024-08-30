@@ -3,7 +3,7 @@ export taylor_horner, taylor_horner_integral
 function validate_taylor_coeffs(x, cs)
     cs_dim = map(udim, cs)
     x_dim = udim(x)
-    @assert allequal(x_dim*p + c_dim for (p, c_dim) in enumerate(cs_dim))
+    @assert allequal(x_dim * p + c_dim for (p, c_dim) in enumerate(cs_dim))
 end
 
 function taylor_horner(x::GQ, cs)::GQ
@@ -39,7 +39,7 @@ function taylor_horner_integral(x, cs, c0)
         result = result * xv / (ii + 1) + csv[ii]
     end
 
-    return (result * result_unit)*x + c0
+    return (result * result_unit) * x + c0
 end
 
 # function taylor_horner_derivative(x, cs, j)
