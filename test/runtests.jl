@@ -261,35 +261,37 @@ using Zygote
         @constinferred atan(d1)
     end
 
-    # @testset "taylor-horner" begin
-    #     t0 = time(0.0)
-    #     c0 = distance(1.5)
-    #     c1 = speed(1.0)
-    #     c2 = acceleration(1.2)
-    #     c3 = acceleration(0.5) / time(2.0)
-    #     c4 = acceleration(1.2) / time(2.0)^2
-    #     cs = SA[c1, c2, c3, c4]
+    @testset "taylor-horner" begin
+        t0 = time(0.0)
+        c0 = distance(1.5)
+        c1 = speed(1.0)
+        c2 = acceleration(1.2)
+        c3 = acceleration(0.5) / time(2.0)
+        c4 = acceleration(1.2) / time(2.0)^Val(2)
+        cs = (c1, c2, c3, c4)
 
-    #     t1 = time(1.0)
+        t1 = time(1.0)
 
-    #     dt = t1 - t0
+        dt = t1 - t0
 
-    #     @test taylor_horner_integral(dt, cs, c0) ≈ (
-    #         c0 + c1 * dt + (1 / 2) * c2 * dt^2 + (1 / 6) * c3 * dt^3 + (1 / 24) * c4 * dt^4
-    #     )
+        @test taylor_horner(dt, cs) ≈
+              (c1 + c2 * dt + (1 / 2) * c3 * dt*dt + (1 / 6) * c4 * dt*dt*dt)
 
-    #     @test (@ballocated taylor_horner_integral($dt, $cs, $c0)) == 0
+        @test (@ballocated taylor_horner($dt, $cs)) == 0
 
-    #     @test taylor_horner(dt, cs) ≈
-    #           (c1 + c2 * dt + (1 / 2) * c3 * dt^2 + (1 / 6) * c4 * dt^3)
+        @test taylor_horner_integral(dt, cs, c0) ≈ (
+            c0 + c1 * dt + (1 / 2) * c2 * dt^Val(2) + (1 / 6) * c3 * dt^Val(3) + (1 / 24) * c4 * dt^Val(4)
+        )
 
-    #     @test (@ballocated taylor_horner($dt, $cs)) == 0
+        @test (@ballocated taylor_horner_integral($dt, $cs, $c0)) == 0
 
-    #     d0 = dimensionless(2.3)
+        
 
-    #     @test_throws DomainError taylor_horner_integral(dt, cs, d0)
-    #     @test_throws DomainError taylor_horner(d0, cs)
-    # end
+        # d0 = dimensionless(2.3)
+
+        # @test_throws DomainError taylor_horner_integral(dt, cs, d0)
+        # @test_throws DomainError taylor_horner(d0, cs)
+    end
 
     # @testset "linear algebra" begin
     #     @testset "dot" begin

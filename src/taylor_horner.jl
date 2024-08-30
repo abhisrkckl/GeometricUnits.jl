@@ -1,25 +1,45 @@
 export taylor_horner, taylor_horner_integral
 
-function taylor_horner(x, cs)
-    n = length(cs)
-    result = GQ(zero(cs[n].x), cs[n].d - x.d)
+function validate_taylor_coeffs(x, cs)
+    cs_dim = map(udim, cs)
+    x_dim = udim(x)
+    @assert allequal(x_dim*p + c_dim for (p, c_dim) in enumerate(cs_dim))
+end
+
+function taylor_horner(x::GQ, cs)::GQ
+    validate_taylor_coeffs(x, cs)
+
+    result_unit = oneunit(first(cs))
+
+    csv = map(value, cs)
+    xv = value(x)
+
+    n = length(csv)
+    result = zero(last(csv))
 
     @inbounds for ii = n:-1:1
-        result = result * x / ii + cs[ii]
+        result = result * xv / ii + csv[ii]
     end
 
-    return result
+    return result * result_unit
 end
 
 function taylor_horner_integral(x, cs, c0)
-    n = length(cs)
-    result = GQ(zero(c0.x), cs[n].d - x.d)
+    validate_taylor_coeffs(x, cs)
+
+    result_unit = oneunit(first(cs))
+
+    csv = map(value, cs)
+    xv = value(x)
+
+    n = length(csv)
+    result = zero(last(csv))
 
     @inbounds for ii = n:-1:1
-        result = result * x / (ii + 1) + cs[ii]
+        result = result * xv / (ii + 1) + csv[ii]
     end
 
-    return result * x + c0
+    return (result * result_unit)*x + c0
 end
 
 # function taylor_horner_derivative(x, cs, j)
