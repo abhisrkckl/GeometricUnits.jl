@@ -285,12 +285,10 @@ using Zygote
 
         @test (@ballocated taylor_horner_integral($dt, $cs, $c0)) == 0
 
-        
+        d0 = dimensionless(2.3)
 
-        # d0 = dimensionless(2.3)
-
-        # @test_throws DomainError taylor_horner_integral(dt, cs, d0)
-        # @test_throws DomainError taylor_horner(d0, cs)
+        @test_throws MethodError taylor_horner_integral(dt, cs, d0)
+        @test_throws AssertionError taylor_horner(d0, cs)
     end
 
     # @testset "linear algebra" begin
