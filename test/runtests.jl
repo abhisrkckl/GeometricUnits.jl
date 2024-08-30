@@ -228,38 +228,38 @@ using Zygote
         @constinferred log2(d1)
     end
 
-    # @testset "trigonometric functions" begin
-    #     @test sin(d1) ≈ 1 / csc(d1)
-    #     @test cos(d1) ≈ 1 / sec(d1)
-    #     @test tan(d1) ≈ 1 / cot(d1)
-    #     @test sincos(d1) == (sin(d1), cos(d1))
+    @testset "trigonometric functions" begin
+        @test sin(d1) ≈ 1 / csc(d1)
+        @test cos(d1) ≈ 1 / sec(d1)
+        @test tan(d1) ≈ 1 / cot(d1)
+        @test sincos(d1) == (sin(d1), cos(d1))
 
-    #     @test asin(sin(a1)) ≈ a1
-    #     @test acos(cos(a1)) ≈ a1
-    #     @test atan(tan(a1)) ≈ a1
-    #     @test acsc(csc(a1)) ≈ a1
-    #     @test asec(sec(a1)) ≈ a1
-    #     @test acot(cot(a1)) ≈ a1
+        @test asin(sin(a1)) ≈ a1
+        @test acos(cos(a1)) ≈ a1
+        @test atan(tan(a1)) ≈ a1
+        @test acsc(csc(a1)) ≈ a1
+        @test asec(sec(a1)) ≈ a1
+        @test acot(cot(a1)) ≈ a1
 
-    #     @test atan(t1, t2) ≈ atan(t1 / t2)
+        @test atan(t1, t2) ≈ atan(t1 / t2)
 
-    #     @constinferred sin(d1)
-    #     @constinferred csc(d1)
-    #     @constinferred cos(d1)
-    #     @constinferred sec(d1)
-    #     @constinferred tan(d1)
-    #     @constinferred cot(d1)
+        @constinferred sin(d1)
+        @constinferred csc(d1)
+        @constinferred cos(d1)
+        @constinferred sec(d1)
+        @constinferred tan(d1)
+        @constinferred cot(d1)
 
-    #     @constinferred asin(sin(a1))
-    #     @constinferred acos(cos(a1))
-    #     @constinferred atan(tan(a1))
-    #     @constinferred acsc(csc(a1))
-    #     @constinferred asec(sec(a1))
-    #     @constinferred acot(cot(a1))
+        @constinferred asin(sin(a1))
+        @constinferred acos(cos(a1))
+        @constinferred atan(tan(a1))
+        @constinferred acsc(csc(a1))
+        @constinferred asec(sec(a1))
+        @constinferred acot(cot(a1))
 
-    #     @constinferred atan(t1, t2)
-    #     @constinferred atan(d1)
-    # end
+        @constinferred atan(t1, t2)
+        @constinferred atan(d1)
+    end
 
     # @testset "taylor-horner" begin
     #     t0 = time(0.0)

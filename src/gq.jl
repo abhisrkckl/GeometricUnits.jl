@@ -24,7 +24,7 @@ value(a::GQ) = a.x
 udim(::GQ{d,X}) where {d,X} = d
 
 # Unit forwarding and conversion
-import Base.zero, Base.oneunit, Base.oftype, Base.convert 
+import Base.zero, Base.oneunit, Base.oftype, Base.convert
 
 oneunit(a::GQ{d,X}) where {d,X} = GQ{d}(oneunit(a.x))
 zero(a::GQ{d,X}) where {d,X} = GQ{d}(zero(a.x))
