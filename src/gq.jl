@@ -3,7 +3,8 @@ export GQ
 """
     GQ{X<:AbstractFloat}
 
-Struct representing a geometrized quantity.
+Represents a quantity with dimensions ``[T^d]``.
+A `GQ` can be represented mathematically as ``x s^d`` where ``d ∈ ℤ``.
 """
 struct GQ{d,X<:AbstractFloat}
     x::X
