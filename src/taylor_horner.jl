@@ -24,7 +24,7 @@ function taylor_horner(x::GQ, cs)::GQ
     return result * result_unit
 end
 
-function taylor_horner_integral(x, cs, c0)
+function taylor_horner_integral(x, cs)
     validate_taylor_coeffs(x, cs)
 
     result_unit = oneunit(first(cs))
@@ -39,8 +39,10 @@ function taylor_horner_integral(x, cs, c0)
         result = result * xv / (ii + 1) + csv[ii]
     end
 
-    return (result * result_unit) * x + c0
+    return (result * result_unit) * x
 end
+
+taylor_horner_integral(x, cs, c0) = taylor_horner_integral(x, cs) + c0
 
 # function taylor_horner_derivative(x, cs, j)
 #     n = length(cs)
