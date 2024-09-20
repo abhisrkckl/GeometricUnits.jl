@@ -44,6 +44,14 @@ end
 
 taylor_horner_integral(x, cs, c0) = taylor_horner_integral(x, cs) + c0
 
+taylor_horner(::GQ, cs::Tuple{X}) where {X<:GQ} = cs[1]
+taylor_horner(x::GQ, cs::Tuple{X1,X2}) where {X1<:GQ,X2<:GQ} = cs[1] + x * cs[2]
+taylor_horner(x::GQ, cs::Tuple{X1,X2,X3}) where {X1<:GQ,X2<:GQ,X3<:GQ} =
+    cs[1] + x * (cs[2] + 0.5 * x * cs[3])
+taylor_horner_integral(::GQ, cs::Tuple{X}) where {X<:GQ} = x * cs[1]
+taylor_horner_integral(x::GQ, cs::Tuple{X1,X2}) where {X1<:GQ,X2<:GQ} =
+    x * (cs[1] + 0.5 * x * cs[2])
+
 # function taylor_horner_derivative(x, cs, j)
 #     n = length(cs)
 #     result = GQ(zero(cs[n].x), cs[n].d - x.d)
