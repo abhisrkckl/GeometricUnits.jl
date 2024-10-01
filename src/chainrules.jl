@@ -229,6 +229,26 @@ function ChainRulesCore.rrule(::typeof(exp), a::GQ)
     return y, _pullback
 end
 
+function ChainRulesCore.rrule(::typeof(exp10), a::GQ)
+    y = exp10(a)
+    function _pullback(ybar)
+        fbar = NoTangent()
+        abar = ybar * y * log(10)
+        return fbar, abar
+    end
+    return y, _pullback
+end
+
+function ChainRulesCore.rrule(::typeof(exp2), a::GQ)
+    y = exp2(a)
+    function _pullback(ybar)
+        fbar = NoTangent()
+        abar = ybar * y * log(2)
+        return fbar, abar
+    end
+    return y, _pullback
+end
+
 function ChainRulesCore.rrule(::typeof(log), a::GQ)
     y = log(a)
     function _pullback(ybar)

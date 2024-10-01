@@ -218,10 +218,12 @@ using Zygote
 
     @testset "exp and log" begin
         @test exp(log(d1)) ≈ d1
-        @test 10^(log10(d1)) ≈ d1
-        @test 2^(log2(d1)) ≈ d1
+        @test exp10(log10(d1)) ≈ d1
+        @test exp2(log2(d1)) ≈ d1
 
         @constinferred exp(d1)
+        @constinferred exp10(d1)
+        @constinferred exp2(d1)
         @constinferred log(d1)
         @constinferred log10(d1)
         @constinferred log2(d1)
@@ -370,6 +372,8 @@ using Zygote
 
         @test gradient((a, b) -> value(a^b), d1, d2) ==
               gradient((a, b) -> value(exp(b * log(a))), d1, d2)
+        @test gradient(a -> value(exp10(a)), d1)[1] ≈ gradient(a -> value(exp(a * log(10))), d1)[1]
+        @test gradient(a -> value(exp2(a)), d1)[1] ≈ gradient(a -> value(exp(a * log(2))), d1)[1]
         @test @ballocated(gradient((a, b) -> value(a^b), $d1, $d2)) == 0
         @test @ballocated(gradient((a, b) -> value(exp(b * log(a))), $d1, $d2)) == 0
 
