@@ -1,7 +1,7 @@
 export GQ
 
 """
-    GQ{X<:AbstractFloat}
+    GQ{d,X<:AbstractFloat}
 
 Represents a quantity with dimensions ``[T^d]``.
 A `GQ` can be represented mathematically as ``x s^d`` where ``d ∈ ℤ``.
