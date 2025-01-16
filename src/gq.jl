@@ -32,6 +32,9 @@ zero(a::GQ{d,X}) where {d,X} = GQ{d}(zero(a.x))
 oftype(a::GQ{d,X}, y) where {d,X} = GQ{d}(oftype(a.x, y))
 convert(::Type{X}, a::GQ{d,X}) where {d,X} = a.x
 
+oneunit(::Type{GQ{d,X}}) where {d,X} = GQ{d}(oneunit(X))
+zero(::Type{GQ{d,X}}) where {d,X} = GQ{d}(zero(X))
+
 # == Iteration ==================
 import Base.iterate, Base.length
 

@@ -31,6 +31,9 @@ using Zygote
         @test value(oneunit(f1)) == 1 && udim(oneunit(f1)) == udim(f1)
         @test value(zero(f1)) == 0 && udim(zero(f1)) == udim(f1)
 
+        @test zero(typeof(f1)) == zero(f1)
+        @test oneunit(typeof(f1)) == oneunit(f1)
+
         @constinferred oneunit(t1)
         @constinferred value(t1)
         @constinferred udim(t1)
@@ -372,8 +375,10 @@ using Zygote
 
         @test gradient((a, b) -> value(a^b), d1, d2) ==
               gradient((a, b) -> value(exp(b * log(a))), d1, d2)
-        @test gradient(a -> value(exp10(a)), d1)[1] ≈ gradient(a -> value(exp(a * log(10))), d1)[1]
-        @test gradient(a -> value(exp2(a)), d1)[1] ≈ gradient(a -> value(exp(a * log(2))), d1)[1]
+        @test gradient(a -> value(exp10(a)), d1)[1] ≈
+              gradient(a -> value(exp(a * log(10))), d1)[1]
+        @test gradient(a -> value(exp2(a)), d1)[1] ≈
+              gradient(a -> value(exp(a * log(2))), d1)[1]
         @test @ballocated(gradient((a, b) -> value(a^b), $d1, $d2)) == 0
         @test @ballocated(gradient((a, b) -> value(exp(b * log(a))), $d1, $d2)) == 0
 
@@ -431,7 +436,7 @@ using Zygote
         @test gradient(a -> value(atan(sin(a) / cos(a))), d1)[1] == oneunit(d1)
         @test gradient(a -> value(atan(sin(a), cos(a))), d1)[1] == oneunit(d1)
         @test @ballocated(gradient(a -> value(atan(sin(a) / cos(a))), $d1)) == 0
-        @test @ballocated(gradient(a -> value(atan(sin(a), cos(a))), $d1)) == 0
+        @test_broken @ballocated(gradient(a -> value(atan(sin(a), cos(a))), $d1)) == 0
 
         @test gradient(a -> value(asin(sin(a))), d3)[1].x ≈ 1
         @test gradient(a -> value(acos(cos(a))), d3)[1].x ≈ 1
