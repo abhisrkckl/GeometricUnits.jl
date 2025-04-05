@@ -117,6 +117,8 @@ using BenchmarkTools
         @test (t1 + t2).x == t1.x + t2.x
         @test_throws MethodError t1 + f1
 
+        @test sum(t1) == t1
+
         @test (t1 - t2).x == t1.x - t2.x
         @test_throws MethodError t1 - f1
 
