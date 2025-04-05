@@ -20,6 +20,7 @@ using BenchmarkTools
         @test value(t11) == Float32(value(t1))
         @test udim(t11) == udim(t1)
         @test length(t11) == 1
+        @test convert(Float32, t11) == t11.x
         @test_throws AssertionError GQ{1.1}(1.2)
     end
 
